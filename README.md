@@ -4,11 +4,11 @@
 Simplificar la conexión entre empresas y candidatos mediante una interfaz web intuitiva y segura.
 
 ## Integrantes
-- Martínez Polanco Arturo (Líder)
-- Diaz Rosales Gerardo Antonio (Frontend)
-- Emiliano Esparza Medina (Backend)
-- Oscar Eduardo González Mancera (Base de Datos)
-- Diaz Kauil Raúl (Tester)
+- Martínez Polanco Arturo (Fullstack)
+- Diaz Rosales Gerardo Antonio (Lider - Fullstack)
+- Emiliano Esparza Medina (Fullstack)
+- Oscar Eduardo González Mancera (Fullstack)
+- Diaz Kauil Raúl (Fullstack)
 
 ## Librerías
 - Vue 3
@@ -19,4 +19,4 @@ Simplificar la conexión entre empresas y candidatos mediante una interfaz web i
 ## Cómo Ejecutar el Proyecto
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/[tu-usuario]/job-platform-frontend.git
+   git clone https://github.com/[usuario]/job-platform-frontend.git
