@@ -22,6 +22,11 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue'), // 👈 Agregamos la vista de Login
     },
+    {
+      path: "/admin/dashboard",
+      name: "Dashboard",
+      component: () => import("@/views/admin/DashboardView.vue"),
+    }
   ],
 })
 
