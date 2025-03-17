@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
+      path: '/perfil-usuario',
+      name: 'PerfilUsuario',
+      component: () => import('../views/PerfilUsuario.vue'), // 👈 Agregamos la vista de Perfil de Usuario
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'), // 👈 Agregamos la vista de Login
@@ -27,6 +32,7 @@ const router = createRouter({
       name: "Dashboard",
       component: () => import("@/views/admin/DashboardView.vue"),
     }
+    
   ],
 })
 
