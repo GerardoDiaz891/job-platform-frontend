@@ -18,14 +18,24 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/login',
+      path: '/Login',
       name: 'login',
       component: () => import('../views/LoginView.vue'), // 👈 Agregamos la vista de Login
     },
     {
-      path: '/register',
+      path: '/Register',
       name: 'register',
       component: () => import('../views/RegisterView.vue'), // 👈 Agregamos la vista de Register
+    },
+    {
+      path: '/UploadCV',
+      name: 'UploadCV',
+      component: () => import('../views/UploadCVView.vue'), // 👈 Agregamos la vista de UploadCV
+    },
+    {
+      path: '/Postulation',
+      name: 'Postulation',
+      component: () => import('../views/PostulationView.vue'), // 👈 Agregamos la vista de Postulation
     },
   ],
 })

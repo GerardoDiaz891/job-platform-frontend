@@ -1,7 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-[35rem] ">
-      <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-6">Regístrate en GetWork</h2>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#568AEE] via-[#1563FB] to-[#003366]">
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-[35rem]">
+      <!-- Contenedor del título y la imagen -->
+      <div class="flex items-center justify-center mb-6">
+        <h2 class="text-3xl font-extrabold text-blue-600">Regístrate</h2>
+        <img :src="LogoGW" alt="Logo" class="w-12 h-12 ml-3">
+      </div>
 
       <form @submit.prevent="register" class="space-y-4">
         <!-- Nombre -->
@@ -77,6 +81,7 @@
 
 <script setup>
 import { ref } from "vue";
+import LogoGW from "@/assets/img/logo.png";
 
 const name = ref("");
 const email = ref("");
