@@ -17,13 +17,15 @@ const router = createRouter({
     {
       path: '/Nosotros',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/Login',
+      path: '/perfil-usuario',
+      name: 'PerfilUsuario',
+      component: () => import('../views/PerfilUsuario.vue'), // 👈 Agregamos la vista de Perfil de Usuario
+    },
+    {
+      path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'), // 👈 Agregamos la vista de Login
     },
@@ -42,7 +44,15 @@ const router = createRouter({
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'), // 👈 Agregamos la vista de Postulation
     },
-  ],
-})
+    {
+      path: "/admin/dashboard",
+      name: "Dashboard",
+      component: () => import("@/views/admin/DashboardView.vue"),
+    }
+  ]
+}
+)
+  
+
 
 export default router
