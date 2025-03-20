@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen bg-gray-100">
-    <!-- Header -->
+    
     <HeaderComponent />
     
     <div class="flex-1 p-6">
@@ -91,7 +91,7 @@
       </button>
     </div>
     
-    <!-- Footer -->
+   
     <FooterComponent />
   </div>
 </template>

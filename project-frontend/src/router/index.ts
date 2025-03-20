@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
+import VacantesView from '@/views/VacantesView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,22 +33,27 @@ const router = createRouter({
     {
       path: '/Register',
       name: 'register',
-      component: () => import('../views/RegisterView.vue'), // 👈 Agregamos la vista de Register
+      component: () => import('../views/RegisterView.vue'), 
     },
     {
       path: '/UploadCV',
       name: 'UploadCV',
-      component: () => import('../views/UploadCVView.vue'), // 👈 Agregamos la vista de UploadCV
+      component: () => import('../views/UploadCVView.vue'), 
     },
     {
       path: '/Postulation',
       name: 'Postulation',
-      component: () => import('../views/PostulationView.vue'), // 👈 Agregamos la vista de Postulation
+      component: () => import('../views/PostulationView.vue'), 
     },
     {
       path: "/admin/dashboard",
       name: "Dashboard",
       component: () => import("@/views/admin/DashboardView.vue"),
+    },
+    {
+      path: '/vacantes',
+      name: 'vacantes',
+      component: VacantesView,
     }
   ]
 }
