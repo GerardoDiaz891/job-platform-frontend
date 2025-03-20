@@ -4,7 +4,6 @@
         <div class="md:flex md:justify-between">
           <div class="mb-6 md:mb-0">
             <a href="#" class="flex items-center">
-              <!-- <img src="/images/zentilia_logo.png" class="h-12 me-5" alt="Logo Zentilia" /> -->
             <span class="self-center text-2xl font-semibold text-white">GetWork</span>
             </a>
           </div>

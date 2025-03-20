@@ -26,7 +26,7 @@
     data() {
       return {
         vacantes: [],
-        errorMessage: '', // Mensaje de error
+        errorMessage: '', 
       };
     },
     async mounted() {
