@@ -1,8 +1,5 @@
-
-
 <template>
   
-
   <RouterView />
+  
 </template>
-
