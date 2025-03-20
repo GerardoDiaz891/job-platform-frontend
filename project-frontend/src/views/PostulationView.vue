@@ -2,7 +2,6 @@
   <HeaderComponent />
   <div class="min-h-screen bg-gradient-to-br from-[#568AEE] via-[#1563FB] to-[#003366] p-10">
     <div class="grid grid-cols-3 gap-5 max-w-7xl mx-auto">
-      <!-- Formulario para agregar postulaciones -->
       <div class="col-span-1 bg-white p-6 rounded-lg shadow-lg h-[25rem] flex flex-col justify-center">
         <h2 class="text-2xl font-bold text-blue-600 mb-4">Agregar Postulación</h2>
         <form @submit.prevent="agregarPostulacion" class="space-y-4">
@@ -18,7 +17,7 @@
         </form>
       </div>
 
-      <!-- Lista de postulaciones -->
+     
       <div class="col-span-2 bg-white p-6 rounded-lg shadow-lg h-auto">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-3xl font-extrabold text-blue-600">Postulaciones</h2>
@@ -42,7 +41,7 @@
     </div>
   </div>
 
-  <!-- Modal para ver detalles de postulación -->
+  
   <div v-if="mostrarModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-[30rem]">
       <h2 class="text-2xl font-bold text-blue-600 mb-4">Detalles de la Postulación</h2>

@@ -8,7 +8,7 @@
       </div>
 
       <form class="space-y-4" @submit.prevent="submitCV">
-        <!-- Archivo CV -->
+        
         <div>
           <label class="block text-gray-700 font-medium">Seleccionar archivo</label>
           <input
@@ -20,7 +20,7 @@
           />
         </div>
 
-        <!-- Nombre del archivo cargado -->
+       
         <div v-if="fileName" class="text-gray-800 mt-2">
           <p><strong>Archivo seleccionado:</strong> {{ fileName }}</p>
           <div class="flex space-x-4 mt-2">
@@ -41,7 +41,7 @@
           </div>
         </div>
 
-        <!-- Botón de subir -->
+        
         <button
           type="submit"
           :disabled="!fileName"

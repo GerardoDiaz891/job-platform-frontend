@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
 import VacantesView from '@/views/VacantesView.vue';
+import NotFound from '../components/NotFound.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,12 +23,12 @@ const router = createRouter({
     {
       path: '/perfil-usuario',
       name: 'PerfilUsuario',
-      component: () => import('../views/PerfilUsuario.vue'), // 👈 Agregamos la vista de Perfil de Usuario
+      component: () => import('../views/PerfilUsuario.vue'), 
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue'), // 👈 Agregamos la vista de Login
+      component: () => import('../views/LoginView.vue'), 
     },
     {
       path: '/Register',
@@ -54,7 +54,11 @@ const router = createRouter({
       path: '/vacantes',
       name: 'vacantes',
       component: VacantesView,
-    }
+    },
+    {
+      path: '/:catchAll(.*)',
+      component: NotFound,
+    },
   ]
 }
 )

@@ -1,7 +1,7 @@
 <template>
   <div class="company-profile">
     <div class="profile-header">
-      <!-- <img class="company-logo" src="/placeholder-company-logo.png" alt="Company Logo" /> -->
+     
       <h1>Datos de la empresa</h1>
     </div>
     <div class="profile-content">
