@@ -1,6 +1,4 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
-  
     <p v-if="vacantes.length === 0" class="text-gray-500 text-center text-sm">No hay vacantes disponibles en este momento.</p>
     <p v-if="errorMessage" class="text-red-600 font-semibold text-center text-sm">{{ errorMessage }}</p>
 
@@ -29,7 +27,7 @@
         </button>
       </div>
     </div>
-  </div>
+  
 </template>
 
 <script>
