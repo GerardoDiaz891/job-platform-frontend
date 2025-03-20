@@ -1,9 +1,20 @@
 <template>
-    <p v-if="vacantes.length === 0" class="text-gray-500 text-center text-sm">No hay vacantes disponibles en este momento.</p>
-    <p v-if="errorMessage" class="text-red-600 font-semibold text-center text-sm">{{ errorMessage }}</p>
+  
+    <div class="col-span-full mb-6">
+      <div class="max-w-md mx-auto">
+        <input 
+          v-model="searchQuery"
+          type="text"
+          placeholder="Buscar vacantes por nombre o descripción..."
+          class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+    </div>
 
-    <div v-for="vacante in vacantes" :key="vacante.id" class="bg-white shadow-lg rounded-xl p-4 max-w-sm w-full mb-4 border border-gray-200">
-      
+    <p v-if="filteredVacantes.length === 0" class="text-gray-500 text-center text-sm col-span-full">No hay vacantes disponibles en este momento.</p>
+    <p v-if="errorMessage" class="text-red-600 font-semibold text-center text-sm col-span-full">{{ errorMessage }}</p>
+
+    <div v-for="vacante in filteredVacantes" :key="vacante.id" class="bg-white shadow-lg rounded-xl p-4 max-w-sm w-full mb-4 border border-gray-200">
       <div class="flex justify-center mb-3">
         <img src="https://img.pikbest.com/png-images/20241118/job-logo-design-png-_11101892.png!sw800" alt="Company Logo" class="w-16 h-16 object-contain">
       </div>
@@ -19,8 +30,8 @@
         </div>
 
         <div class="mt-2 text-xs text-gray-500">
-          <p><strong>Publicado:</strong> {{ vacante.fechaPublicacion | formatDate }}</p>
-          <p><strong>Expira:</strong> {{ vacante.fechaExpiracion | formatDate }}</p>
+          <p><strong>Publicado:</strong> {{ formatDate(vacante.fechaPublicacion) }}</p>
+          <p><strong>Expira:</strong> {{ formatDate(vacante.fechaExpiracion) }}</p>
         </div>   
         <button class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-sm rounded-md font-medium transition duration-200">
           Contactar
@@ -30,32 +41,37 @@
   
 </template>
 
-<script>
-import { getVacantes } from "@/services/api.js";
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { getVacantes } from '@/services/api.js';
 
-export default {
-  data() {
-    return {
-      vacantes: [],
-      errorMessage: '',
-    };
-  },
-  async mounted() {
-    try {
-      this.vacantes = await getVacantes();
-    } catch (error) {
-      this.errorMessage = "Hubo un error al cargar las vacantes.";
-      console.error("Error al cargar las vacantes:", error);
-    }
-  },
-  methods: {
-    formatDate(date) {
-      return new Date(date).toLocaleDateString("es-MX", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    },
-  },
+const vacantes = ref([]);
+const errorMessage = ref('');
+const searchQuery = ref('');
+
+const filteredVacantes = computed(() => {
+  if (!searchQuery.value) return vacantes.value;
+  const query = searchQuery.value.toLowerCase();
+  return vacantes.value.filter(vacante => 
+    vacante.nombre.toLowerCase().includes(query) || 
+    vacante.descripcion.toLowerCase().includes(query)
+  );
+});
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("es-MX", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 };
+
+onMounted(async () => {
+  try {
+    vacantes.value = await getVacantes();
+  } catch (error) {
+    errorMessage.value = "Hubo un error al cargar las vacantes.";
+    console.error("Error al cargar las vacantes:", error);
+  }
+});
 </script>
