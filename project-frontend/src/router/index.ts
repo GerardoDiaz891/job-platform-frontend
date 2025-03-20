@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
-import VacantesView from '@/views/VacantesView.vue';
 import NotFound from '../components/NotFound.vue';
 
 const router = createRouter({
@@ -50,11 +49,7 @@ const router = createRouter({
       name: "Dashboard",
       component: () => import("@/views/admin/DashboardView.vue"),
     },
-    {
-      path: '/vacantes',
-      name: 'vacantes',
-      component: VacantesView,
-    },
+    
     {
       path: '/:catchAll(.*)',
       component: NotFound,

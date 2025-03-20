@@ -1,81 +1,63 @@
 <template>
-    <div>
-      <h2>Vacantes Disponibles</h2>
-      <p v-if="vacantes.length === 0">No hay vacantes disponibles en este momento.</p>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+  <div class="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
   
-      <ul>
-        <li v-for="vacante in vacantes" :key="vacante.id">
-          <h3>{{ vacante.nombre }}</h3>
-          <p>{{ vacante.descripcion }}</p>
-          <p>Salario: ${{ vacante.salario }}</p>
-          <p>Horario: {{ vacante.horario }}</p>
-          <p>Ubicación: {{ vacante.ubicacion }}</p>
-          <p>Tipo de trabajo: {{ vacante.tipoTrabajo }}</p>
-          <p>Fecha de publicación: {{ vacante.fechaPublicacion | formatDate }}</p>
-          <p>Fecha de expiración: {{ vacante.fechaExpiracion | formatDate }}</p>
-        </li>
-      </ul>
+    <p v-if="vacantes.length === 0" class="text-gray-500 text-center text-sm">No hay vacantes disponibles en este momento.</p>
+    <p v-if="errorMessage" class="text-red-600 font-semibold text-center text-sm">{{ errorMessage }}</p>
+
+    <div v-for="vacante in vacantes" :key="vacante.id" class="bg-white shadow-lg rounded-xl p-4 max-w-sm w-full mb-4 border border-gray-200">
+      
+      <div class="flex justify-center mb-3">
+        <img src="https://img.pikbest.com/png-images/20241118/job-logo-design-png-_11101892.png!sw800" alt="Company Logo" class="w-16 h-16 object-contain">
+      </div>
+      <div class="text-center">
+        <h3 class="text-lg font-semibold text-blue-700">{{ vacante.nombre }}</h3>
+        <p class="text-gray-600 text-sm mt-1">{{ vacante.descripcion }}</p>
+
+        <div class="mt-2 text-xs text-gray-700 space-y-1">
+          <p><strong>Salario:</strong> ${{ vacante.salario }}</p>
+          <p><strong>Horario:</strong> {{ vacante.horario }}</p>
+          <p><strong>Ubicación:</strong> {{ vacante.ubicacion }}</p>
+          <p><strong>Tipo:</strong> {{ vacante.tipoTrabajo }}</p>
+        </div>
+
+        <div class="mt-2 text-xs text-gray-500">
+          <p><strong>Publicado:</strong> {{ vacante.fechaPublicacion | formatDate }}</p>
+          <p><strong>Expira:</strong> {{ vacante.fechaExpiracion | formatDate }}</p>
+        </div>   
+        <button class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-sm rounded-md font-medium transition duration-200">
+          Contactar
+        </button>
+      </div>
     </div>
-  </template>
-  
-  <script>
-  import { getVacantes } from "@/services/api.js";
-  
-  export default {
-    data() {
-      return {
-        vacantes: [],
-        errorMessage: '', 
-      };
+  </div>
+</template>
+
+<script>
+import { getVacantes } from "@/services/api.js";
+
+export default {
+  data() {
+    return {
+      vacantes: [],
+      errorMessage: '',
+    };
+  },
+  async mounted() {
+    try {
+      this.vacantes = await getVacantes();
+    } catch (error) {
+      this.errorMessage = "Hubo un error al cargar las vacantes.";
+      console.error("Error al cargar las vacantes:", error);
+    }
+  },
+  methods: {
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     },
-    async mounted() {
-      try {
-        this.vacantes = await getVacantes(); 
-      } catch (error) {
-        this.errorMessage = "Hubo un error al cargar las vacantes.";
-        console.error("Error al cargar las vacantes:", error);
-      }
-    },
-    methods: {
-      formatDate(date) {
-        return new Date(date).toLocaleDateString("es-MX", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  h2 {
-    color: #4A90E2;
-  }
-  
-  ul {
-    list-style-type: none;
-  }
-  
-  li {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #f4f4f4;
-    border-radius: 5px;
-  }
-  
-  h3 {
-    color: #333;
-  }
-  
-  p {
-    margin: 5px 0;
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-  }
-  </style>
-  
+  },
+};
+</script>
