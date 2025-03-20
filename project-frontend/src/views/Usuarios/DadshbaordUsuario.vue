@@ -1,4 +1,10 @@
+<script setup>
+import FooterComponent from '@/components/FooterComponent.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+</script>
 <template>
+
+  <HeaderComponent/>
   <div class="app-container">
     <div class="content">
       <aside class="sidebar">
@@ -13,6 +19,7 @@
       </main>
     </div>
   </div>
+  <FooterComponent/>
 </template>
 
 <script>
