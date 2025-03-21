@@ -7,7 +7,6 @@
       </div>
 
       <form @submit.prevent="login" class="space-y-4">
-        <!-- Email -->
         <div>
           <label class="block text-gray-700 font-medium">Correo electrónico</label>
           <input
@@ -15,11 +14,11 @@
             type="email"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="Ingresa tu correo"
+            required
           />
           <p v-if="!email && submitted" class="text-red-500 text-sm">El correo electrónico es requerido</p>
         </div>
 
-        <!-- Password -->
         <div>
           <label class="block text-gray-700 font-medium">Contraseña</label>
           <input
@@ -27,11 +26,11 @@
             type="password"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="••••••••"
+            required
           />
           <p v-if="!password && submitted" class="text-red-500 text-sm">La contraseña es requerida</p>
         </div>
 
-        <!-- Botón de login -->
         <button
           type="submit"
           class="w-full flex items-center justify-center bg-[#568AEE] text-white py-2 rounded-lg hover:bg-[#1563FB] transition"
@@ -55,24 +54,49 @@
 
 <script setup>
 import { ref } from "vue";
+import { loginUser } from "@/services/api";
+import { useRouter } from "vue-router";
 import LogoGW from "@/assets/img/logo.png";
 
 const email = ref("");
 const password = ref("");
 const loading = ref(false);
 const submitted = ref(false);
+const router = useRouter();
 
 const login = async () => {
   submitted.value = true;
 
-  if (!email.value || !password.value) {
+  // Validar email y contraseña
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.value)) {
+    alert("Por favor, ingresa un correo electrónico válido.");
+    return;
+  }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  if (!passwordRegex.test(password.value)) {
+    alert("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
     return;
   }
 
   loading.value = true;
-  setTimeout(() => {
-    console.log("Iniciando sesión con:", email.value, password.value);
+
+  try {
+    const credentials = {
+      correo: email.value,
+      contraseña: password.value,
+    };
+
+    const response = await loginUser(credentials);
+    localStorage.setItem("token", response.token); 
+    alert("Inicio de sesión exitoso.");
+    router.push("/");
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    alert("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+  } finally {
     loading.value = false;
-  }, 2000);
+  }
 };
 </script>
