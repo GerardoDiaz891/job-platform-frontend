@@ -1,7 +1,6 @@
 <template>
   <div class="company-profile">
     <div class="profile-header">
-     
       <h1>Datos de la empresa</h1>
     </div>
     <div class="profile-content">
@@ -51,13 +50,14 @@ export default {
 h1 {
   color: black;
 }
+
 .company-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
   max-width: 600px;
-  margin: auto;
+  margin: 3rem auto; /* Agregado margen superior */
   background: #ececed;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -65,12 +65,6 @@ h1 {
 
 .profile-header {
   text-align: center;
-}
-
-.company-logo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
 }
 
 .profile-content {
