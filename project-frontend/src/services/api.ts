@@ -1,3 +1,5 @@
+import type { LoginCredentials } from "@/stores/LoginCredentials";
+import type { RegisterUserData } from "@/stores/RegisterUserData";
 import axios from "axios";
 
 const apiClient = axios.create({
@@ -7,12 +9,33 @@ const apiClient = axios.create({
 
 // Interceptor para agregar el token a las solicitudes
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token'); // El token debe guardarse en el LocalStorage
+  const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+export const registerUser = async (userData: RegisterUserData) => {
+  try {
+    const { data } = await apiClient.post("/api/Auth/register", userData);
+    return data;
+  } catch (error) {
+    console.error("Error al registrar el usuario:", error);
+    throw error;
+  }
+};
+
+export const loginUser = async (credentials: LoginCredentials) => {
+  try {
+    const { data } = await apiClient.post("/api/Auth/login", credentials);
+    localStorage.setItem('token', data.token); 
+    return data;
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    throw error;
+  }
+};
 
 //GET de todas las vacantes
 export const getVacantes = async () => {
