@@ -33,9 +33,9 @@
           <p><strong>Publicado:</strong> {{ formatDate(vacante.fechaPublicacion) }}</p>
           <p><strong>Expira:</strong> {{ formatDate(vacante.fechaExpiracion) }}</p>
         </div>   
-        <button class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-sm rounded-md font-medium transition duration-200">
-          Contactar
-        </button>
+        <router-link :to="'/vacante/' + vacante.id" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-sm rounded-md font-medium transition duration-200 text-center block">
+         Ver vacante
+        </router-link>
       </div>
     </div>
   
