@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
 import NotFound from '../components/NotFound.vue';
+import Vacante from '@/components/Vacante.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +54,11 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)',
       component: NotFound,
+    },
+    {
+      path: "/vacante/:id", 
+      name: "Vacante",
+      component: Vacante,
     },
   ]
 }
