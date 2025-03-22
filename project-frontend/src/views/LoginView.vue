@@ -2,8 +2,12 @@
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#568AEE] via-[#1563FB] to-[#003366]">
     <div class="bg-white p-8 rounded-2xl shadow-lg w-[35rem]">
       <div class="flex items-center justify-center mb-6">
+        <img
+            class="w-12 h-12 mr-4"
+            src="@/assets/trans.png"
+            alt="Logo"
+          />
         <h2 class="text-3xl font-extrabold text-blue-600">Iniciar Sesión</h2>
-        <img :src="LogoGW" alt="Logo" class="w-12 h-12 ml-3">
       </div>
 
       <form @submit.prevent="login" class="space-y-4">

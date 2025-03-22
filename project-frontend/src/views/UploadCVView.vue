@@ -1,14 +1,13 @@
 <template>
   <HeaderComponent />
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#568AEE] via-[#1563FB] to-[#003366]">
-    <div class="bg-white p-10 rounded-2xl shadow-lg w-[35rem] ">
+  <div class="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#568AEE] via-[#1563FB] to-[#003366]">
+    <div class="bg-white px-6 py-8 rounded-2xl shadow-lg max-w-lg w-full">
       <div class="flex items-center justify-center mb-6">
         <h2 class="text-3xl font-extrabold text-blue-600">Subir CV</h2>
         <img :src="LogoGW" alt="Logo" class="w-12 h-12 ml-3" />
       </div>
 
       <form class="space-y-4" @submit.prevent="submitCV">
-        
         <div>
           <label class="block text-gray-700 font-medium">Seleccionar archivo</label>
           <input
@@ -20,28 +19,26 @@
           />
         </div>
 
-       
         <div v-if="fileName" class="text-gray-800 mt-2">
           <p><strong>Archivo seleccionado:</strong> {{ fileName }}</p>
-          <div class="flex space-x-4 mt-2">
+          <div class="flex flex-wrap gap-2 mt-2">
             <button
               type="button"
               @click="removeFile"
-              class="bg-red-500 text-white py-1 px-4 rounded-lg hover:bg-red-600 transition"
+              class="bg-red-500 text-white py-1 px-4 rounded-lg hover:bg-red-600 transition sm:w-full lg:w-auto"
             >
               Eliminar
             </button>
             <button
               type="button"
               @click="editFile"
-              class="bg-yellow-500 text-white py-1 px-4 rounded-lg hover:bg-yellow-600 transition"
+              class="bg-yellow-500 text-white py-1 px-4 rounded-lg hover:bg-yellow-600 transition sm:w-full lg:w-auto"
             >
               Editar
             </button>
           </div>
         </div>
 
-        
         <button
           type="submit"
           :disabled="!fileName"
@@ -81,7 +78,6 @@ const editFile = () => {
 };
 
 const submitCV = () => {
-  // Aquí puedes agregar la lógica para subir el archivo al backend
   alert("CV subido con éxito!");
 };
 </script>
