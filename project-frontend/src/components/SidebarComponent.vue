@@ -1,36 +1,40 @@
 <template>
   <div class="flex">
-    
-    <div 
-      :class="['h-screen bg-blue-600 text-white flex flex-col shadow-lg transition-all duration-300', isOpen ? 'w-64' : 'w-30']"
+    <!-- Sidebar -->
+    <div
+      :class="[
+        'fixed sm:relative h-screen bg-blue-700 text-white flex flex-col shadow-xl transition-all duration-300 z-50',
+        isOpen ? 'w-64' : 'w-20',
+        isMobile ? 'left-0' : ''
+      ]"
+      v-show="!isMobile || isOpen"
     >
-      
+      <!-- Botón para colapsar/expandir -->
       <button 
-        @click="isOpen = !isOpen" 
-        class="p-2 text-white hover:bg-blue-500 transition self-end"
+        @click="toggleSidebar" 
+        class="p-3 text-white hover:bg-blue-600 transition self-end flex items-center justify-center"
       >
-        <span v-if="isOpen">⬅️</span>
-        <span v-else>➡️</span>
+        <span class="text-lg">{{ isOpen ? '⬅️' : '➡️' }}</span>
       </button>
 
-      
-      <div class="p-6 text-2xl font-bold flex items-center gap-2 border-b border-blue-500" v-if="isOpen">
-        <span class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold">
+      <!-- Logo y Nombre -->
+      <div class="p-5 flex items-center gap-3 border-b border-blue-500">
+        <div class="w-10 h-10 bg-white text-blue-700 flex items-center justify-center rounded-full font-bold">
           GW
-        </span>
-        GetWork
+        </div>
+        <span v-if="isOpen" class="text-xl font-semibold">GetWork</span>
       </div>
 
-      <!-- Menú -->
+      <!-- Menú de Navegación -->
       <nav class="flex-1 mt-4">
-        <ul>
+        <ul class="space-y-2">
           <li v-for="item in menuItems" :key="item.name">
-            <router-link 
-              :to="item.path" 
-              class="flex items-center gap-3 px-6 py-3 text-white hover:bg-blue-500 transition duration-300 rounded-lg mx-2"
-              active-class="bg-white text-blue-600 font-bold"
+            <router-link
+              :to="item.path"
+              class="flex items-center gap-4 px-4 py-3 hover:bg-blue-600 transition duration-300 rounded-lg mx-2"
+              active-class="bg-white text-blue-700 font-bold"
             >
-              <span class="w-2 h-2 bg-white rounded-full"></span>
+              <span class="text-lg">{{ item.icon }}</span>
               <span v-if="isOpen">{{ item.name }}</span>
             </router-link>
           </li>
@@ -38,19 +42,46 @@
       </nav>
     </div>
 
-   
-    
+    <!-- Contenido Principal -->
+    <div class="flex-1 p-4 sm:ml-20" :class="{ 'ml-64': isOpen && !isMobile }">
+      <button 
+        @click="toggleSidebar" 
+        class="sm:hidden fixed top-5 left-5 bg-blue-700 text-white p-2 rounded-md z-50"
+      >
+        ☰
+      </button>
+      <slot />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-const isOpen = ref(true);
+import { ref, onMounted } from "vue";
 
+const isOpen = ref(true);
+const isMobile = ref(false);
+
+// Definir los elementos del menú con iconos
 const menuItems = [
-  { name: "Inicio", path: "/dashboard" },
-  { name: "Usuarios", path: "/dashboard/usuarios" },
-  { name: "Vacantes", path: "/dashboard/vacantes" },
-  { name: "Categorías", path: "/dashboard/categorias" },
+  { name: "Inicio", path: "/dashboard", icon: "🏠" },
+  { name: "Usuarios", path: "/dashboard/usuarios", icon: "👤" },
+  { name: "Vacantes", path: "/dashboard/vacantes", icon: "📄" },
+  { name: "Categorías", path: "/dashboard/categorias", icon: "📂" },
 ];
+
+// Función para detectar si es móvil
+const checkScreen = () => {
+  isMobile.value = window.innerWidth < 640;
+  if (isMobile.value) isOpen.value = false;
+};
+
+const toggleSidebar = () => {
+  isOpen.value = !isOpen.value;
+};
+
+// Detectar cambios en la pantalla
+onMounted(() => {
+  checkScreen();
+  window.addEventListener("resize", checkScreen);
+});
 </script>
