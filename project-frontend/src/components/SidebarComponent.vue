@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <!-- Sidebar -->
+
     <div
       :class="[
         'fixed sm:relative h-screen bg-blue-700 text-white flex flex-col shadow-xl transition-all duration-300 z-50',
@@ -9,7 +9,7 @@
       ]"
       v-show="!isMobile || isOpen"
     >
-      <!-- Botón para colapsar/expandir -->
+      
       <button 
         @click="toggleSidebar" 
         class="p-3 text-white hover:bg-blue-600 transition self-end flex items-center justify-center"
@@ -17,7 +17,7 @@
         <span class="text-lg">{{ isOpen ? '⬅️' : '➡️' }}</span>
       </button>
 
-      <!-- Logo y Nombre -->
+     
       <div class="p-5 flex items-center gap-3 border-b border-blue-500">
         <div class="w-10 h-10 bg-white text-blue-700 flex items-center justify-center rounded-full font-bold">
           GW
@@ -25,7 +25,7 @@
         <span v-if="isOpen" class="text-xl font-semibold">GetWork</span>
       </div>
 
-      <!-- Menú de Navegación -->
+   
       <nav class="flex-1 mt-4">
         <ul class="space-y-2">
           <li v-for="item in menuItems" :key="item.name">
@@ -42,8 +42,8 @@
       </nav>
     </div>
 
-    <!-- Contenido Principal -->
-    <div class="flex-1 p-4 sm:ml-20" :class="{ 'ml-64': isOpen && !isMobile }">
+  
+    <div class="flex-1 p-4 " :class="{ 'ml-2': isOpen && !isMobile }">
       <button 
         @click="toggleSidebar" 
         class="sm:hidden fixed top-5 left-5 bg-blue-700 text-white p-2 rounded-md z-50"
