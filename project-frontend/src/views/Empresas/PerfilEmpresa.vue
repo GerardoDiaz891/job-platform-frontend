@@ -20,7 +20,7 @@
       <label>Número de Teléfono</label>
       <input v-model="phone" type="tel" placeholder="+123 456 7890" />
 
-      <button>Guardar Perfil</button>
+      <!-- <button>Guardar Perfil</button> -->
     </div>
   </div>
   <FooterComponent />
