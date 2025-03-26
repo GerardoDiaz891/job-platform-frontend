@@ -3,7 +3,7 @@ import type { RegisterUserData } from "@/stores/RegisterUserData";
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://localhost:7043", 
+  baseURL: "https://localhost:7043",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -29,7 +29,7 @@ export const registerUser = async (userData: RegisterUserData) => {
 export const loginUser = async (credentials: LoginCredentials) => {
   try {
     const { data } = await apiClient.post("/api/Auth/login", credentials);
-    localStorage.setItem('token', data.token); 
+    localStorage.setItem('token', data.token);
     return data;
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
@@ -52,9 +52,37 @@ export const getVacantes = async () => {
 export const getVacanteById = async (id) => {
   try {
     const { data } = await apiClient.get(`/api/Vacantes/${id}`);
+    console.log(data);
     return data;
   } catch (error) {
     console.error(`Error al obtener la vacante con ID ${id}:`, error);
     throw error;
+  }
+};
+
+export const postCV = async (formData) => {
+  if (!formData || formData.get("file") === null) {
+    throw new Error("El FormData está vacío o no contiene el archivo.");
+  }
+
+  try {
+    const { data } = await apiClient.post(`/api/CVs/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("CV subido correctamente:", data);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error del servidor:", error.response.status, error.response.data);
+      throw new Error(`Error del servidor: ${error.response.data.message || "Algo salió mal."}`);
+    } else if (error.request) {
+      console.error("No se recibió respuesta del servidor:", error.request);
+      throw new Error("No se pudo conectar al servidor. Verifica tu conexión.");
+    } else {
+      console.error("Error inesperado:", error.message);
+      throw new Error("Ocurrió un error inesperado.");
+    }
   }
 };

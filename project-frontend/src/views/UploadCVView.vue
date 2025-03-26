@@ -14,13 +14,12 @@
             type="file"
             accept=".pdf,.doc,.docx"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            ref="fileInput"
-            @change="handleFileChange"
+            @change="onFileSelected"
           />
         </div>
 
-        <div v-if="fileName" class="text-gray-800 mt-2">
-          <p><strong>Archivo seleccionado:</strong> {{ fileName }}</p>
+        <div v-if="selectedFile" class="text-gray-800 mt-2">
+          <p><strong>Archivo seleccionado:</strong> {{ selectedFile.name }}</p>
           <div class="flex flex-wrap gap-2 mt-2">
             <button
               type="button"
@@ -39,12 +38,17 @@
           </div>
         </div>
 
+        <!-- Mostrar el ID de la vacante -->
+        <div v-if="cvStore.vacanteId" class="text-red-800 mt-4">
+          <p><strong>ID de la vacante:</strong> {{ cvStore.vacanteId }}</p>
+        </div>
+
         <button
           type="submit"
-          :disabled="!fileName"
+          :disabled="!selectedFile"
           class="w-full flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
-          Subir CV
+          {{ cvStore.isLoading ? 'Subiendo...' : 'Subir CV' }}
         </button>
       </form>
     </div>
@@ -56,28 +60,78 @@
 import LogoGW from "@/assets/img/logo.png";
 import FooterComponent from "@/components/FooterComponent.vue";
 import HeaderComponent from "@/components/HeaderComponent.vue";
-import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
+import { useCVStore } from "@/stores/useCVStore"; // Accedemos al store
 
-const fileInput = ref(null);
-const fileName = ref("");
+const route = useRoute();
+const cvStore = useCVStore();
+const selectedFile = ref(null);
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    fileName.value = file.name;
+onMounted(() => {
+  // Establecemos el ID de la vacante desde los parámetros de la URL
+  if (route.params.id) {
+    cvStore.setVacanteId(route.params.id);
   }
+
+  // Establecemos el ID del usuario de manera centralizada
+  cvStore.setUsuarioId("7"); // Este valor debería venir del sistema de autenticación en un caso real
+});
+
+const onFileSelected = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Validación del tamaño del archivo (máximo 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert("El archivo debe ser menor a 5MB.");
+    return;
+  }
+
+  // Validación del formato del archivo
+  const allowedExtensions = ["pdf", "docx"];
+  const fileExtension = file.name.split(".").pop().toLowerCase();
+  if (!allowedExtensions.includes(fileExtension)) {
+    alert("Formato no permitido. Solo se aceptan archivos PDF o DOCX.");
+    return;
+  }
+
+  selectedFile.value = file;
 };
 
 const removeFile = () => {
-  fileInput.value.value = ""; // Clear the file input
-  fileName.value = ""; // Clear the file name display
+  selectedFile.value = null;
 };
 
 const editFile = () => {
-  fileInput.value.click(); // Trigger the file input to reselect a file
+  document.querySelector('input[type=file]').click();
 };
 
-const submitCV = () => {
-  alert("CV subido con éxito!");
+const submitCV = async () => {
+  if (!selectedFile.value) {
+    return alert("Por favor, selecciona un archivo.");
+  }
+
+  if (!cvStore.usuarioId || !cvStore.vacanteId) {
+    return alert("IDs de usuario o vacante no configurados. Verifica antes de enviar.");
+  }
+
+  // Llamamos al método uploadCV desde el store
+  await cvStore.uploadCV(selectedFile.value);
+
+  // Mostramos mensajes de éxito o error
+  if (cvStore.successMessage) {
+    alert(cvStore.successMessage);
+    removeFile();
+  }
+  if (cvStore.error) {
+    alert(cvStore.error);
+  }
 };
 </script>
+
+<style scoped>
+button:disabled {
+  cursor: not-allowed;
+}
+</style>

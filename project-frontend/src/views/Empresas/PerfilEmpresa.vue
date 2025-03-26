@@ -1,7 +1,7 @@
 <template>
   <div class="company-profile">
     <div class="profile-header">
-     
+
       <h1>Datos de la empresa</h1>
     </div>
     <div class="profile-content">
@@ -103,3 +103,4 @@ button {
   cursor: pointer;
 }
 </style>
+

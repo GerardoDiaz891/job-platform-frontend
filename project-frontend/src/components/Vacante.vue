@@ -6,7 +6,7 @@ import FooterComponent from '@/components/FooterComponent.vue';
     <HeaderComponent/>
     <div class="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
       <h1 class="text-3xl font-extrabold text-center text-blue-700 mb-6">Detalles de la Vacante</h1>
-      
+
       <div v-if="vacante" class="space-y-6">
         <div class="bg-gray-100 p-4 rounded-lg">
           <p class="text-lg text-gray-700"><strong class="text-gray-900">Nombre:</strong> {{ vacante.nombre }}</p>
@@ -37,26 +37,28 @@ import FooterComponent from '@/components/FooterComponent.vue';
         </div>
         <div class="flex justify-center mt-6 space-x-4">
             <button @click="goBack" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Regresar</button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Postularse</button>   
+            <RouterLink :to="'/UploadCV/' + vacante.id">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Postularse</button>
+          </RouterLink>
         </div>
 
 
       </div>
-      
+
       <div v-else-if="error" class="text-center text-red-500 font-semibold mt-6">
         <p>Error al cargar la vacante: {{ error }}</p>
       </div>
-      
+
       <div v-else class="text-center text-gray-500 mt-6">
         <p>Cargando...</p>
       </div>
     </div>
     <FooterComponent/>
   </template>
-  
+
   <script>
   import { getVacanteById } from "@/services/api.js";
-  
+
   export default {
     name: "Vacante",
     data() {
@@ -87,4 +89,3 @@ import FooterComponent from '@/components/FooterComponent.vue';
     }
   };
   </script>
-  

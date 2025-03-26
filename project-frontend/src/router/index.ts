@@ -23,47 +23,48 @@ const router = createRouter({
     {
       path: '/perfil-usuario',
       name: 'PerfilUsuario',
-      component: () => import('../views/PerfilUsuario.vue'), 
+      component: () => import('../views/PerfilUsuario.vue'),
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue'), 
+      component: () => import('../views/LoginView.vue'),
     },
     {
       path: '/Register',
       name: 'register',
-      component: () => import('../views/RegisterView.vue'), 
+      component: () => import('../views/RegisterView.vue'),
     },
     {
-      path: '/UploadCV',
+      path: '/UploadCV/:id',
       name: 'UploadCV',
-      component: () => import('../views/UploadCVView.vue'), 
+      component: () => import('../views/UploadCVView.vue'),
+      props: true
     },
     {
       path: '/Postulation',
       name: 'Postulation',
-      component: () => import('../views/PostulationView.vue'), 
+      component: () => import('../views/PostulationView.vue'),
     },
     {
       path: "/admin/dashboard",
       name: "Dashboard",
       component: () => import("@/views/admin/DashboardView.vue"),
     },
-    
+
     {
       path: '/:catchAll(.*)',
       component: NotFound,
     },
     {
-      path: "/vacante/:id", 
+      path: "/vacante/:id",
       name: "Vacante",
       component: Vacante,
     },
   ]
 }
 )
-  
+
 
 
 export default router
