@@ -1,49 +1,68 @@
 <template>
+  <HeaderComponent />
   <div class="company-profile">
     <div class="profile-header">
       <h1>Datos de la empresa</h1>
     </div>
     <div class="profile-content">
       <label>Nombre de la empresa</label>
-      <input v-model="company.name" type="text" placeholder="Nombre de la empresa" />
+      <input v-model="name" type="text" placeholder="Nombre de la empresa" />
 
       <label>Descripción de la Empresa</label>
-      <textarea v-model="company.description" placeholder="Describe tu empresa..."></textarea>
+      <textarea v-model="description" placeholder="Describe tu empresa..."></textarea>
 
       <label>Ubicación</label>
-      <input v-model="company.location" type="text" placeholder="Ciudad, País" />
+      <input v-model="location" type="text" placeholder="Ciudad, País" />
 
       <label>Correo Electrónico</label>
-      <input v-model="company.email" type="email" placeholder="empresa@email.com" />
+      <input v-model="email" type="email" placeholder="empresa@email.com" />
 
       <label>Número de Teléfono</label>
-      <input v-model="company.phone" type="tel" placeholder="+123 456 7890" />
+      <input v-model="phone" type="tel" placeholder="+123 456 7890" />
 
-      <button @click="saveProfile">Guardar Perfil</button>
+      <button>Guardar Perfil</button>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
-<script>
-export default {
-  name: 'CompanyProfile',
-  data() {
-    return {
-      company: {
-        description: '',
-        location: '',
-        email: '',
-        phone: '',
-        name: '',
-      },
-    }
-  },
-  methods: {
-    saveProfile() {
-      console.log('Perfil guardado:', this.company)
-    },
-  },
+<script setup>
+import { ref } from 'vue'
+import FooterComponent from '@/components/FooterComponent.vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import { perfilUSer } from '@/services/api'
+import { updateUser } from '@/services/api'
+
+import { onMounted } from 'vue'
+
+let description = ref('')
+let location = ref('')
+let email = ref('')
+let name = ref('')
+let phone = ref('')
+
+async function nameS() {
+  const dataInfo = await perfilUSer()
+  let id = dataInfo.id
+  console.log(dataInfo)
+  description.value = dataInfo.descripcionEmpresa
+  location.value = dataInfo.direccion
+  name.value = dataInfo.nombre
+  email.value = dataInfo.correo
+  phone.value = dataInfo.telefono
+
+  // const data = {
+  //   nombre: 'hola',
+  //   id: id,
+  // }
+  // const update = await updateUser(id, { Id: id, Nombre: 'hola mundo' })
+  // console.log(update)
 }
+
+onMounted(async () => {
+  await nameS()
+  console.log(`the component is now mounted.`)
+})
 </script>
 
 <style scoped>

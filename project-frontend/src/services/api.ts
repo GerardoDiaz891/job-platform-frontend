@@ -30,9 +30,31 @@ export const loginUser = async (credentials: LoginCredentials) => {
   try {
     const { data } = await apiClient.post('/api/Auth/login', credentials)
     localStorage.setItem('token', data.token)
+    console.log('Usuario logueado:', data)
+    const payload = JSON.parse(atob(data.token.split('.')[1])) // Decodifica el token
+    console.log(
+      'Usuario logueado:',
+      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+    )
+
     return data
   } catch (error) {
     console.error('Error al iniciar sesión:', error)
+    throw error
+  }
+}
+export const perfilUSer = async () => {
+  const { data } = await apiClient.get('/api/Usuarios/mi-informacion')
+  // localStorage.setItem('token', data.token)
+  return data
+}
+
+export const updateUser = async (id: number, update: any) => {
+  try {
+    const { data } = await apiClient.put(`/api/Usuarios/${id}`, update)
+    return data
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error)
     throw error
   }
 }
