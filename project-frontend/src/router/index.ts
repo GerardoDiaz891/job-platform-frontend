@@ -15,6 +15,7 @@ const router = createRouter({
     {
       path: '/PerfilEmpresa',
       component: PerfilEmpresaVue,
+      meta: { requiereAuth: true },
     },
     {
       path: '/Nosotros',
@@ -25,6 +26,7 @@ const router = createRouter({
       path: '/perfil/usuario',
       name: 'PerfilUsuario',
       component: () => import('../views/PerfilUsuario.vue'),
+      meta: { requiereAuth: true },
     },
     {
       path: '/login',
@@ -40,18 +42,20 @@ const router = createRouter({
       path: '/UploadCV',
       name: 'UploadCV',
       component: () => import('../views/UploadCVView.vue'),
+      meta: { requiereAuth: true },
     },
     {
       path: '/Postulation',
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'),
+      meta: { requiereAuth: true },
     },
     {
       path: '/admin/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
+      meta: { requiereAuth: true, requiereAdmin: true },
     },
-
     {
       path: '/:catchAll(.*)',
       component: NotFound,
@@ -62,16 +66,31 @@ const router = createRouter({
       component: Vacante,
     },
     {
-      path: "/admin/usuarios",
-      name: "Usuarios",
-      component: () => import("@/views/admin/UsuariosView.vue"),
+      path: '/admin/usuarios',
+      name: 'Usuarios',
+      component: () => import('@/views/admin/UsuariosView.vue'),
+      meta: { requiereAuth: true, requiereAdmin: true },
     },
     {
-      path: "/admin/create-user",
-      name: "CreateUser",
-      component: () => import("@/views/admin/CreateUserView.vue"),
+      path: '/admin/create-user',
+      name: 'CreateUser',
+      component: () => import('@/views/admin/CreateUserView.vue'),
+      meta: { requiereAuth: true, requiereAdmin: true },
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const userRole = localStorage.getItem('role')
+
+  if (to.meta.requiereAuth && !token) {
+    next('/login')
+  } else if (to.meta.requiereAdmin && userRole !== 'admin') {
+    next('/')
+  } else {
+    next()
+  }
 })
 
 export default router
