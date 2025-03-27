@@ -1,136 +1,239 @@
 <template>
-    <div class="flex">
-     
-      <SidebarComponent />
-  
-      
-      <div class="min-h-screen bg-white py-10 w-full">
-        <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">
-          Lista de Usuarios
-        </h1>
-  
-       
-        <div class="text-center mb-8">
-          <button
-            @click="openAddUserModal"
-            class="bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            Agregar Usuario
-          </button>
-        </div>
-  
-        
-        <div v-if="loading" class="flex justify-center items-center py-12">
-          <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
-          <p class="text-blue-500 ml-4 text-lg">Cargando usuarios...</p>
-        </div>
-  
-        
-        <div v-else-if="error" class="text-red-500 text-center font-semibold">
-          {{ error }}
-        </div>
-  
-        
-        <div v-else class="mx-4">
-          <div class="overflow-x-auto rounded-lg">
-            <table class="w-full table-auto border-collapse min-w-full">
-              <thead class="bg-blue-100 text-gray-800">
-                <tr>
-                  <th class="px-6 py-3 text-left font-semibold">Nombre</th>
-                  <th class="px-6 py-3 text-left font-semibold">Correo</th>
-                  <th class="px-6 py-3 text-left font-semibold">Empresa</th>
-                  <th class="px-6 py-3 text-left font-semibold">Tipo</th>
-                  <th class="px-6 py-3 text-left font-semibold">Teléfono</th>
-                  <th class="px-6 py-3 text-left font-semibold">Sitio Web</th>
-                  <th class="px-6 py-3 text-left font-semibold">Descripción</th>
-                  <th class="px-6 py-3 text-left font-semibold">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="usuario in usuarios"
-                  :key="usuario.id"
-                  class="hover:bg-blue-50 transition-colors duration-200 even:bg-gray-50"
-                >
-                  <td class="px-6 py-4 border-b border-gray-200">
-                    <span class="font-semibold text-gray-800">{{ usuario.nombre }}</span>
-                    <span class="text-sm text-gray-500 block">{{ usuario.nombreRol }}</span>
-                  </td>
-                  <td class="px-6 py-4 border-b border-gray-200">{{ usuario.correo }}</td>
-                  <td class="px-6 py-4 border-b border-gray-200">
-                    <strong>{{ usuario.nombreEmpresa }}</strong><br />
-                    <span class="text-sm text-gray-500">{{ usuario.direccion }}</span>
-                  </td>
-                  <td class="px-6 py-4 border-b border-gray-200">{{ usuario.tipoEmpresa }}</td>
-                  <td class="px-6 py-4 border-b border-gray-200">{{ usuario.telefono }}</td>
-                  <td class="px-6 py-4 border-b border-gray-200">
-                    <a
-                      v-if="usuario.sitioWeb"
-                      :href="usuario.sitioWeb"
-                      target="_blank"
-                      class="text-blue-500 hover:underline"
-                    >
-                      🌐 Visitar
-                    </a>
-                    <span v-else class="text-gray-500">No disponible</span>
-                  </td>
-                  <td class="px-6 py-4 border-b border-gray-200">{{ usuario.descripcionEmpresa }}</td>
-                  <td class="px-6 py-4 border-b border-gray-200">
-                    <div class="flex space-x-2 justify-center">
-                      <button class="text-white bg-blue-400 hover:bg-blue-600 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        ✏️
-                      </button>
-                      <button class="text-white bg-red-400 hover:bg-red-600 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  
-        
-        <div v-if="usuarios.length === 0" class="text-center text-gray-500 py-6">
-          No hay usuarios disponibles.
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <SidebarComponent />
+
+    <!-- Contenido Principal -->
+    <div class="flex-1 p-6 bg-gray-100">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Usuarios</h1>
+        <button
+          @click="openAddUserModal"
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          + Agregar Usuario
+        </button>
+      </div>
+
+      <!-- Tabla de Usuarios -->
+      <div v-if="loading" class="text-center text-gray-500">Cargando...</div>
+      <div v-else-if="error" class="text-center text-red-500">
+        {{ error }}
+      </div>
+      <div v-else>
+        <table class="min-w-full bg-white border rounded-lg overflow-hidden">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="py-2 px-4 text-left">ID</th>
+              <th class="py-2 px-4 text-left">Nombre</th>
+              <th class="py-2 px-4 text-left">Correo</th>
+              <th class="py-2 px-4 text-left">Rol</th>
+              <th class="py-2 px-4 text-left">Empresa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="usuario in usuarios"
+              :key="usuario.idUsuario"
+              class="hover:bg-gray-100"
+            >
+              <td class="py-2 px-4">{{ usuario.idUsuario }}</td>
+              <td class="py-2 px-4">{{ usuario.nombre }}</td>
+              <td class="py-2 px-4">{{ usuario.correo }}</td>
+              <td class="py-2 px-4">{{ usuario.nombreRol }}</td>
+              <td class="py-2 px-4">{{ usuario.nombreEmpresa || "N/A" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal para Agregar Usuario -->
+      <div
+        v-if="mostrarModal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
+      >
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+          <h2 class="text-2xl font-bold mb-4">Agregar Usuario</h2>
+
+          <form @submit.prevent="agregarUsuario">
+            <div class="mb-4">
+              <label class="block text-gray-700">Nombre</label>
+              <input
+                v-model="nuevoUsuario.nombre"
+                type="text"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700">Correo</label>
+              <input
+                v-model="nuevoUsuario.correo"
+                type="email"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700">Contraseña</label>
+              <input
+                v-model="nuevoUsuario.contraseña"
+                type="password"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700">Confirmar Contraseña</label>
+              <input
+                v-model="nuevoUsuario.confirmarContraseña"
+                type="password"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700">Empresa</label>
+              <input
+                v-model="nuevoUsuario.nombreEmpresa"
+                type="text"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700">Tipo de Empresa</label>
+              <input
+                v-model="nuevoUsuario.tipoEmpresa"
+                type="text"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <!-- Selección de Rol -->
+            <div class="mb-4">
+              <label class="block text-gray-700">Rol</label>
+              <select
+                v-model="nuevoUsuario.idRol"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                required
+              >
+                <option value="1">Administrador</option>
+                <option value="2">Reclutador</option>
+                <option value="8">Postulante</option>
+                <!-- Agrega más opciones según los roles disponibles en tu sistema -->
+              </select>
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-4">
+              <button
+                type="button"
+                @click="mostrarModal = false"
+                class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+              >
+                Agregar Usuario
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  
-    <!-- Modal o formulario para agregar usuario (opcional) -->
-    <!-- Este es solo un ejemplo, puedes implementar un modal o un formulario según lo necesites -->
-  </template>
-  
-  <script lang="ts" setup>
-  import { ref, onMounted } from "vue";
-  import SidebarComponent from "@/components/SidebarComponent.vue";
-  import { getUsuarios } from "@/services/api";
-  
-  // Estado de los usuarios y carga
-  const usuarios = ref([]);
-  const loading = ref(true);
-  const error = ref<string | null>(null);
-  
-  // Función para obtener los usuarios
-  const fetchUsuarios = async () => {
-    try {
-      usuarios.value = await getUsuarios();
-    } catch (err) {
-      error.value = "Error al cargar usuarios. Por favor, intenta de nuevo.";
-    } finally {
-      loading.value = false;
-    }
-  };
-  
-  // Función para abrir el modal o formulario para agregar un usuario
-  const openAddUserModal = () => {
-    alert("Aquí se abriría el modal para agregar un usuario.");
-  };
-  
-  // Cargar usuarios al montar el componente
-  onMounted(() => {
-    fetchUsuarios();
-  });
-  </script>
-  
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
+import SidebarComponent from "@/components/SidebarComponent.vue";
+import { getUsuarios, createUsuario } from "@/services/api";
+
+// Estado de usuarios y modal
+const usuarios = ref([]);
+const loading = ref(true);
+const error = ref<string | null>(null);
+const mostrarModal = ref(false);
+
+// Datos para el nuevo usuario
+const nuevoUsuario = ref({
+  nombre: "",
+  correo: "",
+  contraseña: "",
+  confirmarContraseña: "",
+  idRol: 1, // Valor predeterminado (Administrador)
+  nombreRol: "Administrador", // Esto se actualiza dinámicamente
+  nombreEmpresa: "",
+  tipoEmpresa: "",
+  direccion: "",
+  telefono: "",
+  sitioWeb: "",
+  descripcionEmpresa: "",
+});
+
+// Obtener usuarios al cargar
+const fetchUsuarios = async () => {
+  try {
+    usuarios.value = await getUsuarios();
+  } catch (err) {
+    error.value = "Error al cargar usuarios.";
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Abrir modal para agregar usuario
+const openAddUserModal = () => {
+  mostrarModal.value = true;
+};
+
+// Crear nuevo usuario
+const agregarUsuario = async () => {
+  if (nuevoUsuario.value.contraseña !== nuevoUsuario.value.confirmarContraseña) {
+    alert("Las contraseñas no coinciden.");
+    return;
+  }
+
+  try {
+    await createUsuario(nuevoUsuario.value);
+    mostrarModal.value = false;
+    fetchUsuarios(); // Recargar lista
+    alert("Usuario agregado exitosamente.");
+  } catch (err) {
+    console.error("Error al agregar el usuario:", err);
+    alert("Hubo un error al crear el usuario.");
+  }
+};
+
+// Actualizar el nombreRol según el idRol seleccionado
+watch(() => nuevoUsuario.value.idRol, (newValue) => {
+  switch (newValue) {
+    case 1:
+      nuevoUsuario.value.nombreRol = "Administrador";
+      break;
+    case 2:
+      nuevoUsuario.value.nombreRol = "Reclutador";
+      break;
+    case 8:
+      nuevoUsuario.value.nombreRol = "Postulante";
+      break;
+    default:
+      nuevoUsuario.value.nombreRol = "Desconocido";
+  }
+});
+
+onMounted(() => {
+  fetchUsuarios();
+});
+</script>
+
+<style scoped>
+/* Estilos adicionales si necesitas */
+</style>
