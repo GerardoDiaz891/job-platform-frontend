@@ -1,15 +1,15 @@
 <template>
     <div class="flex">
-      <!-- Sidebar -->
+     
       <SidebarComponent />
   
-      <!-- Contenido principal -->
+      
       <div class="min-h-screen bg-white py-10 w-full">
         <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">
           Lista de Usuarios
         </h1>
   
-        <!-- Botón para agregar usuario -->
+       
         <div class="text-center mb-8">
           <button
             @click="openAddUserModal"
@@ -19,18 +19,18 @@
           </button>
         </div>
   
-        <!-- Cargando usuarios -->
+        
         <div v-if="loading" class="flex justify-center items-center py-12">
           <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
           <p class="text-blue-500 ml-4 text-lg">Cargando usuarios...</p>
         </div>
   
-        <!-- Error al cargar -->
+        
         <div v-else-if="error" class="text-red-500 text-center font-semibold">
           {{ error }}
         </div>
   
-        <!-- Lista de usuarios con scroll horizontal solo en la tabla -->
+        
         <div v-else class="mx-4">
           <div class="overflow-x-auto rounded-lg">
             <table class="w-full table-auto border-collapse min-w-full">
@@ -91,7 +91,7 @@
           </div>
         </div>
   
-        <!-- Mensaje cuando no hay usuarios -->
+        
         <div v-if="usuarios.length === 0" class="text-center text-gray-500 py-6">
           No hay usuarios disponibles.
         </div>
