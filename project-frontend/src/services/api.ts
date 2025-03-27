@@ -144,6 +144,22 @@ export const getUsuarios = async () => {
   }
 };
 
+//POST Usuarios
+export const createUsuario = async (usuario: any) => {
+  try {
+    const { data } = await apiClient.post("/api/Usuarios", usuario);
+    return data;
+  } catch (error) {
+    console.error("Error al crear el usuario:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+
 
 
 
