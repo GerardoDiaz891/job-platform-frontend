@@ -6,14 +6,17 @@ import FooterComponent from '@/components/FooterComponent.vue';
 
 <template>
   <HeaderComponent/>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-gray-100">
-    <div class="col-span-full mb-6">
-      <h2 class="text-2xl font-bold text-center mb-4">Vacantes Disponibles en el Sistema</h2>
-      <div class="max-w-md mx-auto">
-       
-      </div>
+  <main class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+      <Vacantes />
     </div>
-    <Vacantes :vacantes="filteredVacantes" />
-  </div>
+  </main>
   <FooterComponent/>
 </template>
+
+<style>
+/* Opcional: Estilos globales para el layout */
+.container {
+  max-width: 1280px;
+}
+</style>
