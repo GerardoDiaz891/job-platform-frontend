@@ -92,52 +92,56 @@
       </div>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { loginUser } from "@/services/api";
-import { useRouter } from "vue-router";
-import LogoGW from "@/assets/img/logo.png";
+import { ref } from 'vue'
+import { loginUser } from '@/services/api'
+import { useRouter } from 'vue-router'
+import LogoGW from '@/assets/img/logo.png'
 
-const email = ref("");
-const password = ref("");
-const loading = ref(false);
-const submitted = ref(false);
-const router = useRouter();
+const email = ref('')
+const password = ref('')
+const loading = ref(false)
+const submitted = ref(false)
+const router = useRouter()
 
 const login = async () => {
-  submitted.value = true;
+  submitted.value = true
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email.value)) {
-    alert("Por favor, ingresa un correo electrónico válido.");
-    return;
+    alert('Por favor, ingresa un correo electrónico válido.')
+    return
   }
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
   if (!passwordRegex.test(password.value)) {
-    alert("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
-    return;
+    alert(
+      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.',
+    )
+    return
   }
 
-  loading.value = true;
+  loading.value = true
 
   try {
     const credentials = {
       correo: email.value,
       contraseña: password.value,
-    };
+    }
 
-    const response = await loginUser(credentials);
-    localStorage.setItem("token", response.token); 
-    alert("Inicio de sesión exitoso.");
-    router.push("/");
+    const response = await loginUser(credentials)
+    localStorage.setItem('token', response.token)
+    console.log('token', response)
+    alert('Inicio de sesión exitoso.')
+    router.push('/')
   } catch (error) {
-    console.error("Error al iniciar sesión:", error);
-    alert("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+    console.error('Error al iniciar sesión:', error)
+    alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 };
 </script>
