@@ -143,3 +143,19 @@ export const getUsuarios = async () => {
     throw error;
   }
 };
+
+
+
+
+
+
+// GET Roles
+export const getRoles = async () => {
+  try {
+    const { data } = await apiClient.get('/api/Rols')
+    return data
+  } catch (error) {
+    console.error('Error al obtener los roles:', error)
+    throw error
+  }
+}
