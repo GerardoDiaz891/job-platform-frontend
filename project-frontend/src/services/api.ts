@@ -159,3 +159,36 @@ export const getRoles = async () => {
     throw error
   }
 }
+
+//Crear rol
+export const createRol = async (rolData: { nombre: string }) => {
+  try {
+    const { data } = await apiClient.post('/api/Rols', rolData)
+    return data
+  } catch (error) {
+    console.error('Error al crear el rol:', error)
+    throw error
+  }
+}
+
+//Eliminar Rol
+export const deleteRol = async (id: number) => {
+  try {
+    await apiClient.delete(`/api/Rols/${id}`)
+  } catch (error) {
+    console.error('Error al eliminar el rol:', error)
+    throw error
+  }
+}
+
+//Editar Rol
+export const updateRol = async (id: number, data: { id: number; nombre: string }) => {
+  try {
+    console.log('Datos enviados al backend:', { id, ...data }) // 👈 Log para ver el request
+    await apiClient.put(`/api/Rols/${id}`, { id, ...data })
+  } catch (error) {
+    console.error('Error al actualizar el rol:', error)
+    throw error
+  }
+}
+
