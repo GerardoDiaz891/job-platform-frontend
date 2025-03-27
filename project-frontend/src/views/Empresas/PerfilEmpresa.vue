@@ -3,66 +3,100 @@
   <div class="company-profile">
     <div class="profile-header">
       <h1>Datos de la empresa</h1>
+      <button @click="toggleEditar" class="edit-button">
+        {{ modoEdicion ? 'Cancelar' : 'Editar' }}
+      </button>
     </div>
+
     <div class="profile-content">
       <label>Nombre de la empresa</label>
-      <input v-model="name" type="text" placeholder="Nombre de la empresa" />
+      <input v-model="empresa.nombreEmpresa" :disabled="!modoEdicion" type="text" />
 
       <label>Descripción de la Empresa</label>
-      <textarea v-model="description" placeholder="Describe tu empresa..."></textarea>
+      <textarea v-model="empresa.descripcionEmpresa" :disabled="!modoEdicion"></textarea>
 
       <label>Ubicación</label>
-      <input v-model="location" type="text" placeholder="Ciudad, País" />
+      <input v-model="empresa.direccion" :disabled="!modoEdicion" type="text" />
 
       <label>Correo Electrónico</label>
-      <input v-model="email" type="email" placeholder="empresa@email.com" />
+      <input v-model="empresa.correo" :disabled="!modoEdicion" type="email" />
 
       <label>Número de Teléfono</label>
-      <input v-model="phone" type="tel" placeholder="+123 456 7890" />
+      <input v-model="empresa.telefono" :disabled="!modoEdicion" type="tel" />
 
-      <!-- <button>Guardar Perfil</button> -->
+      <label>Sitio Web</label>
+      <input v-model="empresa.sitioWeb" :disabled="!modoEdicion" type="url" />
+
+      <!-- Botón de guardar cambios solo visible en modo edición -->
+      <button v-if="modoEdicion" @click="guardarCambios" class="save-button">
+        Guardar Cambios
+      </button>
     </div>
   </div>
   <FooterComponent />
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import FooterComponent from '@/components/FooterComponent.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
-import { perfilUSer } from '@/services/api'
-import { updateUser } from '@/services/api'
+import { perfilUSer, updateUser } from '@/services/api'
 
-import { onMounted } from 'vue'
+const empresa = ref({
+  id: null,
+  nombreEmpresa: '',
+  descripcionEmpresa: '',
+  direccion: '',
+  correo: '',
+  telefono: '',
+  sitioWeb: '',
+})
 
-let description = ref('')
-let location = ref('')
-let email = ref('')
-let name = ref('')
-let phone = ref('')
+const modoEdicion = ref(false)
 
-async function nameS() {
-  const dataInfo = await perfilUSer()
-  let id = dataInfo.id
-  console.log(dataInfo)
-  description.value = dataInfo.descripcionEmpresa
-  location.value = dataInfo.direccion
-  name.value = dataInfo.nombre
-  email.value = dataInfo.correo
-  phone.value = dataInfo.telefono
-
-  // const data = {
-  //   nombre: 'hola',
-  //   id: id,
-  // }
-  // const update = await updateUser(id, { Id: id, Nombre: 'hola mundo' })
-  // console.log(update)
+async function cargarDatos() {
+  try {
+    const dataInfo = await perfilUSer()
+    if (dataInfo) {
+      empresa.value = {
+        id: dataInfo.id,
+        nombreEmpresa: dataInfo.nombreEmpresa || '',
+        descripcionEmpresa: dataInfo.descripcionEmpresa || '',
+        direccion: dataInfo.direccion || '',
+        correo: dataInfo.correo || '',
+        telefono: dataInfo.telefono || '',
+        sitioWeb: dataInfo.sitioWeb || '',
+      }
+    }
+  } catch (error) {
+    console.error('Error al obtener datos de la empresa:', error)
+  }
 }
 
-onMounted(async () => {
-  await nameS()
-  console.log(`the component is now mounted.`)
-})
+async function guardarCambios() {
+  try {
+    if (!empresa.value.id) {
+      console.error('No hay ID de empresa para actualizar')
+      return
+    }
+
+    const dataActualizada = { ...empresa.value }
+
+    // Llamada a la API para actualizar los datos de la empresa
+    await updateUser(empresa.value.id, dataActualizada)
+    alert('Perfil actualizado correctamente')
+    modoEdicion.value = false // Desactivar modo edición
+  } catch (error) {
+    console.error('Error al actualizar datos de la empresa:', error)
+    alert('Error al actualizar el perfil')
+  }
+}
+
+function toggleEditar() {
+  modoEdicion.value = !modoEdicion.value
+}
+
+onMounted(cargarDatos)
 </script>
 
 <style scoped>
@@ -76,7 +110,7 @@ h1 {
   align-items: center;
   padding: 2rem;
   max-width: 600px;
-  margin: 3rem auto; /* Agregado margen superior */
+  margin: 3rem auto;
   background: #ececed;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -84,6 +118,9 @@ h1 {
 
 .profile-header {
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .profile-content {
@@ -107,12 +144,34 @@ textarea {
   border-radius: 5px;
 }
 
+input:disabled,
+textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
 button {
-  background: #007bff;
-  color: white;
   padding: 0.75rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.edit-button {
+  background: #f0ad4e;
+  color: white;
+}
+
+.save-button {
+  background: #007bff;
+  color: white;
+}
+
+.edit-button:hover {
+  background: #ec971f;
+}
+
+.save-button:hover {
+  background: #0056b3;
 }
 </style>
