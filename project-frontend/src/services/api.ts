@@ -131,4 +131,15 @@ export const downloadCV = async (idVacante: number): Promise<Blob> => {
     console.error('Error al descargar el CV:', axiosError.response?.data)
     throw axiosError
   }
-}
+};
+
+//Usuarios GET
+export const getUsuarios = async () => {
+  try {
+    const { data } = await apiClient.get("/api/Usuarios");
+    return data;
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    throw error;
+  }
+};
