@@ -60,6 +60,11 @@ const router = createRouter({
       name: "Vacante",
       component: Vacante,
     },
+    {
+      path: "/admin/usuarios",
+      name: "Usuarios",
+      component: () => import("@/views/admin/UsuariosView.vue"),
+    },
   ]
 }
 )

@@ -58,3 +58,14 @@ export const getVacanteById = async (id) => {
     throw error;
   }
 };
+
+//Usuarios GET
+export const getUsuarios = async () => {
+  try {
+    const { data } = await apiClient.get("/api/Usuarios");
+    return data;
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    throw error;
+  }
+};
