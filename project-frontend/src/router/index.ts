@@ -71,7 +71,13 @@ const router = createRouter({
       name: "Roles",
       component: () => import("@/views/admin/RolesView.vue"),
     },
+    {
+      path: "/empresa/vacantes",
+      name: "Vacantes",
+      component: () => import("@/views/Empresas/DashboardEmpresa.vue"),
+    },
   ],
+
 })
 
 export default router

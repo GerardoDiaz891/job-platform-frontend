@@ -44,9 +44,9 @@ export const loginUser = async (credentials: LoginCredentials) => {
     throw error
   }
 }
+
 export const perfilUSer = async () => {
   const { data } = await apiClient.get('/api/Usuarios/mi-informacion')
-  // localStorage.setItem('token', data.token)
   return data
 }
 
@@ -60,7 +60,6 @@ export const updateUser = async (id: number, update: any) => {
   }
 }
 
-
 //GET de todas las vacantes
 export const getVacantes = async () => {
   try {
@@ -71,6 +70,23 @@ export const getVacantes = async () => {
     throw error
   }
 }
+
+//GET vacantes por usuario
+export const getVacantesEmpresa = async () => {
+  const usuarioId = localStorage.getItem('usuarioId');  // Obtén el usuarioId desde localStorage
+  if (!usuarioId) {
+    console.error('Usuario no encontrado en localStorage');
+    throw new Error('Usuario no encontrado');
+  }
+  try {
+    const { data } = await apiClient.get(`/api/Vacantes/empresa/${usuarioId}`);
+    return data;
+  } catch (error) {
+    console.error(`Error al obtener las vacantes del usuario con ID ${usuarioId}:`, error);
+    throw error;
+  }
+};
+
 
 //GET vacante por ID
 export const getVacanteById = async (id: number) => {
@@ -87,10 +103,10 @@ export const getVacanteById = async (id: number) => {
 export const uploadCV = async (file: File, idVacante: number): Promise<CVResponse> => {
   const formData = new FormData()
   formData.append('file', file)
-  
+
   try {
     const { data } = await apiClient.post<CVResponse>(
-      `/api/CVs/upload/${idVacante}`, 
+      `/api/CVs/upload/${idVacante}`,
       formData,
       {
         headers: {
@@ -144,11 +160,6 @@ export const getUsuarios = async () => {
   }
 };
 
-
-
-
-
-
 // GET Roles
 export const getRoles = async () => {
   try {
@@ -156,6 +167,17 @@ export const getRoles = async () => {
     return data
   } catch (error) {
     console.error('Error al obtener los roles:', error)
+    throw error
+  }
+}
+
+// DELETE Vacante
+export const deleteVacante = async (id: number) => {
+  try {
+    const { data } = await apiClient.delete(`/api/Vacantes/${id}`)
+    return data
+  } catch (error) {
+    console.error(`Error al eliminar la vacante con ID ${id}:`, error)
     throw error
   }
 }
