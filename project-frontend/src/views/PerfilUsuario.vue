@@ -40,11 +40,21 @@
           </div>
           <div>
             <label class="block text-gray-700 font-medium">Teléfono:</label>
-            <input v-model="usuario.telefono" type="text" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.telefono"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
           <div>
             <label class="block text-gray-700 font-medium">Ubicación:</label>
-            <input v-model="usuario.ubicacion" type="text" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.ubicacion"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
         </div>
       </div>
@@ -54,11 +64,21 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-gray-700 font-medium">Puesto Actual:</label>
-            <input v-model="usuario.puesto" type="text" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.puesto"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
           <div>
             <label class="block text-gray-700 font-medium">Empresa:</label>
-            <input v-model="usuario.empresa" type="text" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.empresa"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
           <div>
             <label class="block text-gray-700 font-medium">Experiencia (años):</label>
@@ -66,6 +86,7 @@
               v-model="usuario.experiencia"
               type="number"
               class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
             />
           </div>
           <div>
@@ -74,6 +95,7 @@
               v-model="usuario.habilidades"
               rows="3"
               class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
             ></textarea>
           </div>
         </div>
@@ -84,25 +106,21 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-gray-700 font-medium">Título Profesional:</label>
-            <input v-model="usuario.titulo" type="text" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.titulo"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
           <div>
             <label class="block text-gray-700 font-medium">Universidad:</label>
-            <input v-model="usuario.universidad" type="text" class="w-full p-2 border rounded-lg" />
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white shadow-lg rounded-xl p-6 mt-6">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Redes Profesionales</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-gray-700 font-medium">LinkedIn:</label>
-            <input v-model="usuario.linkedin" type="url" class="w-full p-2 border rounded-lg" />
-          </div>
-          <div>
-            <label class="block text-gray-700 font-medium">GitHub:</label>
-            <input v-model="usuario.github" type="url" class="w-full p-2 border rounded-lg" />
+            <input
+              v-model="usuario.universidad"
+              type="text"
+              class="w-full p-2 border rounded-lg"
+              @input="guardarEnLocalStorage"
+            />
           </div>
         </div>
       </div>
@@ -146,17 +164,20 @@ export default {
     }
   },
   async mounted() {
+    this.cargarDesdeLocalStorage()
     await this.cargarDatos()
   },
   methods: {
     async cargarDatos() {
-      const dataInfo = await perfilUSer()
-
-      if (dataInfo.nombre && dataInfo.correo) {
-        this.usuario.nombre = dataInfo.nombre
-        this.usuario.email = dataInfo.correo
-      } else {
-        console.warn('No se encontraron datos de postulante válidos')
+      try {
+        const dataInfo = await perfilUSer()
+        if (dataInfo.nombre && dataInfo.correo) {
+          this.usuario.nombre = dataInfo.nombre
+          this.usuario.email = dataInfo.correo
+          this.guardarEnLocalStorage() // Guardar en localStorage tras cargar desde la API
+        }
+      } catch (error) {
+        console.error('Error al cargar datos:', error)
       }
     },
     cargarFoto(event) {
@@ -165,12 +186,31 @@ export default {
         const reader = new FileReader()
         reader.onload = (e) => {
           this.usuario.foto = e.target.result
+          this.guardarEnLocalStorage()
         }
         reader.readAsDataURL(file)
       }
     },
+    guardarEnLocalStorage() {
+      const datosLocal = { ...this.usuario }
+      delete datosLocal.nombre
+      delete datosLocal.email
+      localStorage.setItem('usuarioDatos', JSON.stringify(datosLocal))
+    },
+    cargarDesdeLocalStorage() {
+      const datosGuardados = localStorage.getItem('usuarioDatos')
+      if (datosGuardados) {
+        const datosParseados = JSON.parse(datosGuardados)
+        Object.keys(datosParseados).forEach((key) => {
+          if (this.usuario.hasOwnProperty(key)) {
+            this.usuario[key] = datosParseados[key]
+          }
+        })
+      }
+    },
     guardarPerfil() {
-      console.log('Perfil guardado', this.usuario)
+      console.log('Perfil guardado:', this.usuario)
+      this.guardarEnLocalStorage()
     },
   },
 }
