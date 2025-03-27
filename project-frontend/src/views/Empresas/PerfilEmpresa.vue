@@ -199,33 +199,27 @@ async function saveProfile() {
     
     const response = await updateUser(id, updateData)
     console.log('Perfil actualizado:', response)
-    // Aquí podrías añadir una notificación de éxito
   } catch (error) {
     console.error('Error al actualizar el perfil:', error)
-    // Aquí podrías añadir una notificación de error
   } finally {
     loading.value = false
   }
 }
 
-// Resetear formulario
 function resetForm() {
   loadProfile()
 }
 
-// Cargar datos al montar el componente
 onMounted(() => {
   loadProfile()
 })
 </script>
 
 <style scoped>
-/* Transiciones suaves para los inputs */
 input, textarea, select {
   transition: all 0.3s ease;
 }
 
-/* Efecto hover para los botones */
 button:not(:disabled):hover {
   transform: translateY(-1px);
 }

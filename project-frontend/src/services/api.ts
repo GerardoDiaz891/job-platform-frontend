@@ -1,6 +1,7 @@
 import type { LoginCredentials } from '@/stores/LoginCredentials'
 import type { RegisterUserData } from '@/stores/RegisterUserData'
-import axios from 'axios'
+import type { CVResponse } from '@/stores/CVResponse'
+import axios, { AxiosError } from 'axios'
 
 const apiClient = axios.create({
   baseURL: 'https://localhost:7043',
@@ -79,5 +80,55 @@ export const getVacanteById = async (id: number) => {
   } catch (error) {
     console.error(`Error al obtener la vacante con ID ${id}:`, error)
     throw error
+  }
+}
+
+// Modulo de CVs
+export const uploadCV = async (file: File, idVacante: number): Promise<CVResponse> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  
+  try {
+    const { data } = await apiClient.post<CVResponse>(
+      `/api/CVs/upload/${idVacante}`, 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
+    return data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    console.error('Error al subir el CV:', axiosError.response?.data)
+    throw axiosError
+  }
+}
+
+export const checkExistingCV = async (idVacante: number): Promise<CVResponse | null> => {
+  try {
+    const { data } = await apiClient.get<CVResponse>(`/api/CVs/download/${idVacante}`)
+    return data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    if (axiosError.response?.status === 404) {
+      return null // No existe CV para vacante!!
+    }
+    console.error('Error al verificar CV existente:', axiosError.response?.data)
+    throw axiosError
+  }
+}
+
+export const downloadCV = async (idVacante: number): Promise<Blob> => {
+  try {
+    const response = await apiClient.get(`/api/CVs/download/${idVacante}`, {
+      responseType: 'blob'
+    })
+    return response.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    console.error('Error al descargar el CV:', axiosError.response?.data)
+    throw axiosError
   }
 }
