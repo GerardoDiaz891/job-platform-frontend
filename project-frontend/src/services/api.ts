@@ -1,6 +1,8 @@
 import type { LoginCredentials } from '@/stores/LoginCredentials'
 import type { RegisterUserData } from '@/stores/RegisterUserData'
 import type { CVResponse } from '@/stores/CVResponse'
+import type { VacanteDTO } from '@/stores/VacantesDTO'
+
 import axios, { AxiosError } from 'axios'
 
 const apiClient = axios.create({
@@ -29,21 +31,26 @@ export const registerUser = async (userData: RegisterUserData) => {
 
 export const loginUser = async (credentials: LoginCredentials) => {
   try {
-    const { data } = await apiClient.post('/api/Auth/login', credentials)
-    localStorage.setItem('token', data.token)
-    console.log('Usuario logueado:', data)
-    const payload = JSON.parse(atob(data.token.split('.')[1])) // Decodifica el token
-    console.log(
-      'Usuario logueado:',
-      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-    )
-
-    return data
+    const { data } = await apiClient.post('/api/Auth/login', credentials);
+    localStorage.setItem('token', data.token);
+    
+    // Decodificar el token para obtener información
+    const payload = JSON.parse(atob(data.token.split('.')[1]));
+    const userData = {
+      id: parseInt(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier']),
+      rol: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+      email: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/email']
+    };
+    
+    localStorage.setItem('userData', JSON.stringify(userData));
+    
+    return { token: data.token, userData };
   } catch (error) {
-    console.error('Error al iniciar sesión:', error)
-    throw error
+    console.error('Error al iniciar sesión:', error);
+    throw error;
   }
-}
+};
+
 export const perfilUSer = async () => {
   const { data } = await apiClient.get('/api/Usuarios/mi-informacion')
   // localStorage.setItem('token', data.token)
@@ -60,7 +67,7 @@ export const updateUser = async (id: number, update: any) => {
   }
 }
 
-
+//MODULO DE VACANTES GENERALES
 //GET de todas las vacantes
 export const getVacantes = async () => {
   try {
@@ -133,6 +140,38 @@ export const downloadCV = async (idVacante: number): Promise<Blob> => {
   }
 };
 
+//MODELO DE VACANTES (EMPRESARIAL)
+export const getVacantesEmpresarial = async (): Promise<VacanteDTO[]> => {
+  try {
+    const { data } = await apiClient.get<VacanteDTO[]>('/api/Vacantes/mis-vacantes');
+    return data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 
+                       'Error al cargar tus vacantes. Intenta nuevamente.';
+    console.error('Error en getVacantesEmpresarial:', {
+      error: error.message,
+      response: error.response?.data
+    });
+    throw new Error(errorMessage);
+  }
+};
+
+// Crear vacante
+export const crearVacante = async (vacanteData: Omit<VacanteDTO, 'id' | 'fechaPublicacion' | 'usuarioId' | 'cVs'>): Promise<VacanteDTO> => {
+  try {
+    const { data } = await apiClient.post<VacanteDTO>('/api/Vacantes', vacanteData);
+    return data;
+  } catch (error) {
+    console.error('Error al crear vacante:', error);
+    throw error;
+  }
+};
+
+export const actualizarVacante = async (id: number, vacanteData: Partial<VacanteDTO>): Promise<VacanteDTO> => {
+  const { data } = await apiClient.put<VacanteDTO>(`/api/Vacantes/${id}`, vacanteData);
+  return data;
+};
+
 //Usuarios GET
 export const getUsuarios = async () => {
   try {
@@ -154,16 +193,6 @@ export const createUsuario = async (usuario: any) => {
     throw error;
   }
 };
-
-
-
-
-
-
-
-
-
-
 
 // GET Roles
 export const getRoles = async () => {
@@ -198,13 +227,14 @@ export const deleteRol = async (id: number) => {
 }
 
 //Editar Rol
-export const updateRol = async (id: number, data: { id: number; nombre: string }) => {
+// Corrige las funciones de actualización de roles
+export const updateRol = async (id: number, data: { nombre: string }) => {
   try {
-    console.log('Datos enviados al backend:', { id, ...data }) // 👈 Log para ver el request
-    await apiClient.put(`/api/Rols/${id}`, { id, ...data })
+    console.log('Datos enviados al backend:', { nombre: data.nombre });
+    await apiClient.put(`/api/Rols/${id}`, { nombre: data.nombre });
   } catch (error) {
-    console.error('Error al actualizar el rol:', error)
-    throw error
+    console.error('Error al actualizar el rol:', error);
+    throw error;
   }
 }
 

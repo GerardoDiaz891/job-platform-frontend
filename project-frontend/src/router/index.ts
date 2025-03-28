@@ -71,6 +71,21 @@ const router = createRouter({
       name: "CreateUser",
       component: () => import("@/views/admin/CreateUserView.vue"),
     },
+    {
+      path: '/empresarial/vacantes',
+      component: () => import('@/views/Empresas/VacantesEmpresarial.vue'),
+      //meta: { requiresAuth: true, role: 'Empresarial' }
+    },
+    {
+      path: '/empresarial/vacante/:id',
+      component: () => import('@/views/Empresas/DetalleVacante.vue'),
+      //meta: { requiresAuth: true, role: 'Empresarial' }
+    },
+    {
+      path: '/empresarial/crear-vacante',
+      component: () => import('@/views/Empresas/CrearVacante.vue'),
+      //meta: { requiresAuth: true, role: 'Empresarial' }
+    }
   ],
 })
 
