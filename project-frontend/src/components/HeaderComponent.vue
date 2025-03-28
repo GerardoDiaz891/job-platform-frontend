@@ -106,7 +106,6 @@
             to="/mi-perfil"
             class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
           >
-            Mi Perfil
           </router-link>
 
           <button

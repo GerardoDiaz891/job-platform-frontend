@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
-import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
+import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
 import NotFound from '../components/NotFound.vue'
 import Vacante from '@/components/Vacante.vue'
-import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,7 +53,6 @@ const router = createRouter({
       path: '/admin/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
-      meta: { requiereAuth: true, requiereAdmin: true },
     },
     {
       path: '/:catchAll(.*)',
@@ -85,9 +83,14 @@ router.beforeEach((to, from, next) => {
   const userRole = localStorage.getItem('role')
 
   if (to.meta.requiereAuth && !token) {
+    // Si la ruta requiere autenticación y no hay token, redirige a login
     next('/login')
-  } else if (to.meta.requiereAdmin && userRole !== 'admin') {
-    next('/')
+  } else if (to.meta.requiereAdmin && userRole !== 'administrador') {
+    // Si la ruta requiere permisos de administrador y el usuario no lo es, redirige a inicio
+    next('/admin/dashboard')
+  } else if (to.path === '/login' && token && userRole === 'administrador') {
+    // Si un administrador intenta ir a login, redirigir al dashboard
+    next('/admin/dashboard')
   } else {
     next()
   }

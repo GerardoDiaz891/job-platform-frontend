@@ -2,78 +2,118 @@
   <HeaderComponent />
   <div class="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
     <h1 class="text-3xl font-extrabold text-center text-blue-700 mb-6">Detalles de la Vacante</h1>
-    
+
     <div v-if="vacante" class="space-y-6">
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Nombre:</strong> {{ vacante.nombre }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Nombre:</strong> {{ vacante.nombre }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Descripción:</strong> {{ vacante.descripcion }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Descripción:</strong> {{ vacante.descripcion }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Salario:</strong> {{ formatCurrency(vacante.salario) }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Salario:</strong> {{ formatCurrency(vacante.salario) }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Horario:</strong> {{ vacante.horario }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Horario:</strong> {{ vacante.horario }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Ubicación:</strong> {{ vacante.ubicacion }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Ubicación:</strong> {{ vacante.ubicacion }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Tipo de Trabajo:</strong> {{ vacante.tipoTrabajo }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Tipo de Trabajo:</strong> {{ vacante.tipoTrabajo }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Fecha de Publicación:</strong> {{ formatDate(vacante.fechaPublicacion) }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Fecha de Publicación:</strong>
+          {{ formatDate(vacante.fechaPublicacion) }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Fecha de Expiración:</strong> {{ formatDate(vacante.fechaExpiracion) }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Fecha de Expiración:</strong>
+          {{ formatDate(vacante.fechaExpiracion) }}
+        </p>
       </div>
       <div class="bg-gray-100 p-4 rounded-lg">
-        <p class="text-lg text-gray-700"><strong class="text-gray-900">Habilidades Requeridas:</strong> {{ vacante.habilidadesRequeridas }}</p>
+        <p class="text-lg text-gray-700">
+          <strong class="text-gray-900">Habilidades Requeridas:</strong>
+          {{ vacante.habilidadesRequeridas }}
+        </p>
       </div>
 
       <div v-if="error" class="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
         <p>{{ error }}</p>
       </div>
-      
-      <div v-if="successMessage" class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700">
+
+      <div
+        v-if="successMessage"
+        class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700"
+      >
         <p>{{ successMessage }}</p>
       </div>
 
       <div class="flex justify-center mt-6 space-x-4">
-        <button 
-          @click="goBack" 
+        <button
+          @click="goBack"
           class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200"
         >
           Regresar
         </button>
-        
+
         <template v-if="!hasApplied">
-          <input 
+          <input
             ref="cvInput"
-            type="file" 
-            accept=".pdf" 
+            type="file"
+            accept=".pdf"
             @change="handleFileUpload"
             class="hidden"
           />
-          <button 
+          <button
             @click="triggerFileInput"
             :disabled="isLoading"
             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="isLoading">
-              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Enviando...
             </span>
             <span v-else>Postularse</span>
           </button>
         </template>
-        
-        <button 
-          v-else 
+
+        <button
+          v-else
           disabled
           class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md cursor-default"
         >
@@ -81,16 +121,32 @@
         </button>
       </div>
     </div>
-    
+
     <div v-else-if="error" class="text-center text-red-500 font-semibold mt-6">
       <p>Error al cargar la vacante: {{ error }}</p>
     </div>
-    
+
     <div v-else class="text-center text-gray-500 mt-6">
       <div class="flex justify-center">
-        <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg
+          class="animate-spin h-8 w-8 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
         </svg>
       </div>
       <p class="mt-2">Cargando detalles de la vacante...</p>
@@ -109,7 +165,7 @@ import { getVacanteById, uploadCV, checkExistingCV } from '@/services/api'
 export default {
   components: {
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   },
   setup() {
     const route = useRoute()
@@ -169,7 +225,8 @@ export default {
         successMessage.value = '¡Tu CV se ha enviado correctamente!'
         hasApplied.value = true
       } catch (err) {
-        error.value = err.response?.data || 'Error al enviar el CV. Por favor, inténtalo nuevamente.'
+        error.value =
+          err.response?.data || 'Error al enviar el CV. Por favor, inténtalo nuevamente.'
       } finally {
         isLoading.value = false
       }
@@ -183,7 +240,7 @@ export default {
     const formatCurrency = (amount) => {
       return new Intl.NumberFormat('es-MX', {
         style: 'currency',
-        currency: 'MXN'
+        currency: 'MXN',
       }).format(amount)
     }
 
@@ -206,8 +263,8 @@ export default {
       handleFileUpload,
       formatDate,
       formatCurrency,
-      goBack
+      goBack,
     }
-  }
+  },
 }
 </script>

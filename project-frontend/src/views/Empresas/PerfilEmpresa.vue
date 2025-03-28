@@ -8,6 +8,10 @@
       </button>
     </div>
 
+    <div v-if="mensajeExito" class="success-message">
+      {{ mensajeExito }}
+    </div>
+
     <div class="profile-content">
       <label>Nombre de la empresa</label>
       <input v-model="empresa.nombreEmpresa" :disabled="!modoEdicion" type="text" />
@@ -36,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import FooterComponent from '@/components/FooterComponent.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import { perfilUSer, updateUser } from '@/services/api'
@@ -52,6 +56,7 @@ const empresa = ref({
 })
 
 const modoEdicion = ref(false)
+const mensajeExito = ref('')
 
 async function cargarDatos() {
   try {
@@ -86,29 +91,19 @@ async function guardarCambios() {
     }
 
     const dataActualizada = { ...empresa.value }
-
-    // Guardar en Local Storage
     localStorage.setItem('empresa', JSON.stringify(dataActualizada))
-
-    // Llamada a la API para actualizar los datos
     await updateUser(empresa.value.id, dataActualizada)
-    alert('Perfil actualizado correctamente')
-    modoEdicion.value = false // Desactivar modo edición
-  } catch (error) {}
+    mensajeExito.value = 'Perfil actualizado correctamente'
+    setTimeout(() => (mensajeExito.value = ''), 3000)
+    modoEdicion.value = false
+  } catch (error) {
+    console.error('Error al guardar los cambios:', error)
+  }
 }
 
 function toggleEditar() {
   modoEdicion.value = !modoEdicion.value
 }
-
-// Guardar automáticamente en Local Storage cuando hay cambios en los datos
-watch(
-  empresa,
-  (newVal) => {
-    localStorage.setItem('empresa', JSON.stringify(newVal))
-  },
-  { deep: true },
-)
 
 onMounted(cargarDatos)
 </script>
@@ -134,6 +129,16 @@ h1 {
   text-align: center;
   display: flex;
   justify-content: space-between;
+  width: 100%;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
   width: 100%;
 }
 
