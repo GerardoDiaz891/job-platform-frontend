@@ -87,10 +87,10 @@ export const getVacanteById = async (id: number) => {
 export const uploadCV = async (file: File, idVacante: number): Promise<CVResponse> => {
   const formData = new FormData()
   formData.append('file', file)
-  
+
   try {
     const { data } = await apiClient.post<CVResponse>(
-      `/api/CVs/upload/${idVacante}`, 
+      `/api/CVs/upload/${idVacante}`,
       formData,
       {
         headers: {
@@ -151,6 +151,19 @@ export const createUsuario = async (usuario: any) => {
     return data;
   } catch (error) {
     console.error("Error al crear el usuario:", error);
+    throw error;
+  }
+};
+
+
+
+// DELETE Usuarios
+export const deleteUsuario = async (usuarioId: number) => {
+  try {
+    await apiClient.delete(`/api/Usuarios/${usuarioId}`);
+    console.log("Usuario eliminado exitosamente");
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
     throw error;
   }
 };
