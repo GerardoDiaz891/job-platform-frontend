@@ -1,25 +1,26 @@
 <template>
-  <header class="bg-blue-600 text-white shadow-md">
+  <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
     <nav class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <!-- Logo -->
-      <div class="flex-shrink-0">
-        <router-link to="/">
+      <!-- Logo y Nombre -->
+      <div class="flex items-center space-x-2">
+        <router-link to="/" class="flex items-center">
           <img 
-            class="w-12 h-12 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-3" 
+            class="w-10 h-10 transition-transform duration-300 hover:scale-110" 
             src="@/assets/trans.png" 
             alt="Logo"
           />
+          <span class="ml-2 text-xl font-bold hidden sm:block">EmpleoLink</span>
         </router-link>
       </div>
 
-      <!-- Botón para menú móvil -->
+      <!-- Menú móvil toggle -->
       <button 
         @click="isMenuOpen = !isMenuOpen"
-        class="md:hidden focus:outline-none"
+        class="md:hidden focus:outline-none p-2 rounded-full hover:bg-blue-700 transition-colors"
         aria-label="Toggle menu"
       >
         <svg 
-          class="w-8 h-8" 
+          class="w-6 h-6" 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -44,67 +45,73 @@
       <!-- Menú de navegación -->
       <div 
         :class="[
-          'md:flex md:items-center md:gap-6',
+          'md:flex md:items-center md:space-x-2',
           'absolute md:static top-16 left-0 w-full md:w-auto',
-          'bg-blue-600 md:bg-transparent px-4 md:px-0',
-          'transition-all duration-300 ease-in-out',
-          isMenuOpen ? 'max-h-96 opacity-100 py-2' : 'max-h-0 opacity-0 md:max-h-none md:opacity-100',
-          'overflow-hidden md:overflow-visible',
-          'shadow-md md:shadow-none'
+          'bg-gradient-to-b from-blue-600 to-blue-700 md:bg-transparent px-4 md:px-0',
+          'transition-all duration-300 ease-in-out overflow-hidden',
+          'shadow-lg md:shadow-none',
+          isMenuOpen ? 'max-h-screen py-4 opacity-100' : 'max-h-0 opacity-0 md:max-h-full md:opacity-100'
         ]"
       >
         <!-- Enlaces comunes -->
         <router-link 
           to="/" 
-          class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
+          class="nav-link"
         >
           Vacantes
         </router-link>
         
+        <!-- Mostrar solo para usuarios empresariales -->
+        <router-link 
+          v-if="userRole === 'Empresarial'"
+          to="/empresarial/vacantes" 
+          class="nav-link"
+        >
+          Mis Vacantes
+        </router-link>
+        
         <router-link 
           to="/PerfilEmpresa" 
-          class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
+          class="nav-link"
         >
           Perfil Empresa
         </router-link>
         
         <router-link 
           to="/Nosotros" 
-          class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
+          class="nav-link"
         >
           Nosotros
         </router-link>
 
         <!-- Enlaces de autenticación -->
         <template v-if="!isLoggedIn">
-          <!-- Mostrar cuando NO hay sesión -->
           <router-link 
             to="/login" 
-            class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
+            class="nav-link"
           >
             Iniciar Sesión
           </router-link>
           
           <router-link 
             to="/register" 
-            class="block px-4 py-2 md:p-2 mx-4 md:mx-0 mb-2 md:mb-0 bg-white text-blue-600 rounded-md transition-all duration-300 ease-in-out hover:bg-blue-100 hover:shadow-lg hover:-translate-y-1"
+            class="btn-primary"
           >
             Regístrate
           </router-link>
         </template>
         
         <template v-else>
-          <!-- Mostrar cuando hay sesión -->
           <router-link 
             to="/mi-perfil" 
-            class="block px-4 py-2 md:p-1 relative transition-all duration-300 ease-in-out hover:text-blue-200 md:hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-blue-200 after:w-0 after:transition-all after:duration-300"
+            class="nav-link"
           >
             Mi Perfil
           </router-link>
           
           <button 
             @click="logout"
-            class="block px-4 py-2 md:p-2 mx-4 md:mx-0 mb-2 md:mb-0 bg-red-500 text-white rounded-md transition-all duration-300 ease-in-out hover:bg-red-600 hover:shadow-lg hover:-translate-y-1 focus:outline-none"
+            class="btn-danger"
           >
             Cerrar Sesión
           </button>
@@ -120,17 +127,13 @@ export default {
   data() {
     return {
       isMenuOpen: false,
-      isLoggedIn: false
+      isLoggedIn: false,
+      userRole: ''
     }
   },
   created() {
     this.checkAuthStatus();
     window.addEventListener('auth-change', this.checkAuthStatus);
-    
-    // Verificar cuando cambia la ruta
-    this.$router.afterEach(() => {
-      this.checkAuthStatus();
-    });
   },
   beforeDestroy() {
     window.removeEventListener('auth-change', this.checkAuthStatus);
@@ -138,16 +141,15 @@ export default {
   methods: {
     checkAuthStatus() {
       this.isLoggedIn = !!localStorage.getItem('token');
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      this.userRole = userData.role || '';
     },
     async logout() {
       try {
-        
-        // Limpiar el almacenamiento local
         localStorage.removeItem('token');
         localStorage.removeItem('userData');
-        
         this.isLoggedIn = false;
-        
+        this.userRole = '';
         window.dispatchEvent(new Event('auth-change'));
         
         if (this.$route.path !== '/login') {

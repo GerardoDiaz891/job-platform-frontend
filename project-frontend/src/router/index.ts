@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
-import PerfilEmpresa from '../views/Empresas/PerfilEmpresa.vue'
 import NotFound from '../components/NotFound.vue'
 import Vacante from '@/components/Vacante.vue'
 import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
@@ -51,15 +50,11 @@ const router = createRouter({
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
     },
-
-    {
-      path: '/:catchAll(.*)',
-      component: NotFound,
-    },
     {
       path: '/vacante/:id',
       name: 'Vacante',
       component: Vacante,
+      meta: { title: 'Detalle Vacante - EmpleoLink' }
     },
     {
       path: "/admin/usuarios",
@@ -71,22 +66,27 @@ const router = createRouter({
       name: "CreateUser",
       component: () => import("@/views/admin/CreateUserView.vue"),
     },
+    //RUTAS DE USUARIO EMPRESARIAL
     {
       path: '/empresarial/vacantes',
       component: () => import('@/views/Empresas/VacantesEmpresarial.vue'),
-      //meta: { requiresAuth: true, role: 'Empresarial' }
+
     },
     {
       path: '/empresarial/vacante/:id',
       component: () => import('@/views/Empresas/DetalleVacante.vue'),
-      //meta: { requiresAuth: true, role: 'Empresarial' }
     },
     {
       path: '/empresarial/crear-vacante',
       component: () => import('@/views/Empresas/CrearVacante.vue'),
-      //meta: { requiresAuth: true, role: 'Empresarial' }
+    },
+    // Ruta 404
+    {
+      path: '/:catchAll(.*)',
+      component: NotFound,
+      meta: { title: 'Página no encontrada' }
     }
-  ],
+  ]
 })
 
 export default router
