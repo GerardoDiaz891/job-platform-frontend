@@ -1,87 +1,52 @@
 <template>
-  <div class="flex">
-
-    <div
-      :class="[
-        'fixed sm:relative h-screen bg-blue-700 text-white flex flex-col shadow-xl transition-all duration-300 z-50',
-        isOpen ? 'w-64' : 'w-20',
-        isMobile ? 'left-0' : ''
-      ]"
-      v-show="!isMobile || isOpen"
-    >
+  <div class="w-64 bg-gray-800 text-white min-h-screen p-4">
+    <div class="flex items-center space-x-2 p-4 border-b border-gray-700">
+      <h1 class="text-xl font-bold">Panel de Administración</h1>
+    </div>
+    
+    <nav class="mt-6">
+      <router-link 
+        to="/admin/dashboard"
+        class="block py-2 px-4 rounded hover:bg-gray-700 transition mb-2"
+        active-class="bg-blue-600"
+      >
+        🏠 Dashboard
+      </router-link>
+      
+      <router-link 
+        to="/admin/usuarios"
+        class="block py-2 px-4 rounded hover:bg-gray-700 transition mb-2"
+        active-class="bg-blue-600"
+      >
+        👥 Usuarios
+      </router-link>
+      
+      <router-link 
+        to="/admin/roles"
+        class="block py-2 px-4 rounded hover:bg-gray-700 transition mb-2"
+        active-class="bg-blue-600"
+      >
+        🔑 Roles
+      </router-link>
       
       <button 
-        @click="toggleSidebar" 
-        class="p-3 text-white hover:bg-blue-600 transition self-end flex items-center justify-center"
+        @click="logout"
+        class="w-full text-left block py-2 px-4 rounded hover:bg-gray-700 transition mt-8"
       >
-        <span class="text-lg">{{ isOpen ? '⬅️' : '➡️' }}</span>
+        🚪 Cerrar Sesión
       </button>
-
-     
-      <div class="p-5 flex items-center gap-3 border-b border-blue-500">
-        <div class="w-10 h-10 bg-white text-blue-700 flex items-center justify-center rounded-full font-bold">
-          GW
-        </div>
-        <span v-if="isOpen" class="text-xl font-semibold">GetWork</span>
-      </div>
-
-   
-      <nav class="flex-1 mt-4">
-        <ul class="space-y-2">
-          <li v-for="item in menuItems" :key="item.name">
-            <router-link
-              :to="item.path"
-              class="flex items-center gap-4 px-4 py-3 hover:bg-blue-600 transition duration-300 rounded-lg mx-2"
-              active-class="bg-white text-blue-700 font-bold"
-            >
-              <span class="text-lg">{{ item.icon }}</span>
-              <span v-if="isOpen">{{ item.name }}</span>
-            </router-link>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
-  
-    <div class="flex-1 p-4 " :class="{ 'ml-2': isOpen && !isMobile }">
-      <button 
-        @click="toggleSidebar" 
-        class="sm:hidden fixed top-5 left-5 bg-blue-700 text-white p-2 rounded-md z-50"
-      >
-        ☰
-      </button>
-      <slot />
-    </div>
+    </nav>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
 
-const isOpen = ref(true);
-const isMobile = ref(false);
+const router = useRouter();
 
-// Definir los elementos del menú con iconos
-const menuItems = [
-  { name: "Inicio", path: "/dashboard", icon: "🏠" },
-  { name: "Usuarios", path: "/dashboard/usuarios", icon: "👤" },
-  { name: "Vacantes", path: "/dashboard/vacantes", icon: "📄" },
-  { name: "Categorías", path: "/dashboard/categorias", icon: "📂" },
-];
-
-// Función para detectar si es móvil
-const checkScreen = () => {
-  isMobile.value = window.innerWidth < 640;
-  if (isMobile.value) isOpen.value = false;
+const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userData');
+  router.push('/login');
 };
-
-const toggleSidebar = () => {
-  isOpen.value = !isOpen.value;
-};
-
-// Detectar cambios en la pantalla
-onMounted(() => {
-  checkScreen();
-  window.addEventListener("resize", checkScreen);
-});
 </script>

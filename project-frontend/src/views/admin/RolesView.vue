@@ -1,183 +1,221 @@
 <template>
-  <div class="flex">
+  <div class="flex min-h-screen">
     <SidebarComponent />
 
-    <div class="min-h-screen bg-white py-10 w-full">
-      <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">
-        Lista de Roles
-      </h1>
-
-      <div class="text-center mb-8">
-        <input 
-          v-model="nuevoRol"
-          type="text"
-          placeholder="Nombre del rol"
-          class="border px-4 py-2 rounded-md mr-2"
-        />
-        <button
-          @click="agregarRol"
-          class="bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600"
-        >
-          Agregar Rol
-        </button>
-      </div>
-
-      <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
-        <p class="text-blue-500 ml-4 text-lg">Cargando roles...</p>
-      </div>
-
-      <div v-else-if="error" class="text-red-500 text-center font-semibold">
-        {{ error }}
-      </div>
-
-      <div v-else class="mx-4">
-        <div class="overflow-x-auto rounded-lg">
-          <table class="w-full table-auto border-collapse min-w-full">
-            <thead class="bg-blue-100 text-gray-800">
-              <tr>
-                <th class="px-6 py-3 text-left font-semibold">Nombre</th>
-                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
-                v-for="rol in roles" 
-                :key="rol.id" 
-                class="hover:bg-blue-50 transition-colors duration-200 even:bg-gray-50"
-              >
-                <td class="px-6 py-4 border-b border-gray-200">
-                  <div v-if="rolEditando === rol.id">
-                    <input 
-                      v-model="nombreEditado" 
-                      type="text" 
-                      class="border px-2 py-1 rounded-md"
-                    />
-                  </div>
-                  <div v-else>
-                    {{ rol.nombre }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 border-b border-gray-200">
-                  <div class="flex space-x-2 justify-center">
-                    <button 
-                      v-if="rolEditando === rol.id"
-                      class="text-white bg-green-400 hover:bg-green-600 py-2 px-4 rounded-md"
-                      @click="guardarEdicion(rol.id)"
-                    >
-                      💾 Guardar
-                    </button>
-                    <button 
-                      v-if="rolEditando === rol.id"
-                      class="text-white bg-gray-400 hover:bg-gray-600 py-2 px-4 rounded-md"
-                      @click="cancelarEdicion"
-                    >
-                      ❌ Cancelar
-                    </button>
-                    <button 
-                      v-else 
-                      class="text-white bg-blue-400 hover:bg-blue-600 py-2 px-4 rounded-md"
-                      @click="iniciarEdicion(rol)"
-                    >
-                      ✏️ Editar
-                    </button>
-                    <button 
-                      class="text-white bg-red-400 hover:bg-red-600 py-2 px-4 rounded-md" 
-                      @click="eliminarRol(rol.id)"
-                    >
-                      🗑️ Eliminar
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="flex-1 p-6 bg-gray-100">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Gestión de Roles</h1>
+        <div class="flex space-x-4">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Buscar roles..."
+            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            @click="openAddRoleModal"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2"
+          >
+            <span>+</span>
+            <span>Agregar Rol</span>
+          </button>
         </div>
       </div>
 
-      <div v-if="!loading && roles.length === 0" class="text-center text-gray-500 py-6">
-        No hay roles disponibles.
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div v-if="loading" class="p-8 text-center text-gray-500">
+          Cargando roles...
+        </div>
+        
+        <div v-else-if="error" class="p-8 text-center text-red-500 font-medium">
+          {{ error }}
+        </div>
+        
+        <template v-else>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nombre
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr 
+                  v-for="rol in filteredRoles" 
+                  :key="rol.id" 
+                  class="hover:bg-gray-50"
+                >
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ rol.id }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div v-if="rolEditando === rol.id" class="flex items-center">
+                      <input
+                        v-model="nombreEditado"
+                        type="text"
+                        class="px-2 py-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div v-else class="text-sm font-medium text-gray-900">
+                      {{ rol.nombre }}
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                      <template v-if="rolEditando === rol.id">
+                        <button
+                          @click="guardarEdicion(rol.id)"
+                          class="text-white bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-xs"
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          @click="cancelarEdicion"
+                          class="text-white bg-gray-500 hover:bg-gray-600 py-1 px-3 rounded-md text-xs"
+                        >
+                          Cancelar
+                        </button>
+                      </template>
+                      <template v-else>
+                        <button
+                          @click="iniciarEdicion(rol)"
+                          class="text-white bg-blue-500 hover:bg-blue-600 py-1 px-3 rounded-md text-xs"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          @click="confirmarEliminacion(rol.id)"
+                          class="text-white bg-red-500 hover:bg-red-600 py-1 px-3 rounded-md text-xs"
+                        >
+                          Eliminar
+                        </button>
+                      </template>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
       </div>
+
+      <!-- Modal de Confirmación -->
+      <ConfirmationModal
+        :show="showConfirmationModal"
+        title="Eliminar Rol"
+        message="¿Estás seguro de que deseas eliminar este rol? Esta acción no se puede deshacer."
+        @confirm="eliminarRol"
+        @cancel="showConfirmationModal = false"
+      />
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import SidebarComponent from '@/components/SidebarComponent.vue'
-import { getRoles, createRol, deleteRol, updateRol } from '@/services/api'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import SidebarComponent from '@/components/SidebarComponent.vue';
+import ConfirmationModal from '@/components/ConfirmationModal.vue';
+import { getRoles, createRol, deleteRol, updateRol } from '@/services/api';
 
-const roles = ref([])
-const loading = ref(true)
-const error = ref(null)
-const nuevoRol = ref('')
+// Estado
+const roles = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const searchQuery = ref('');
+const showConfirmationModal = ref(false);
+const rolToDelete = ref(null);
 
-const rolEditando = ref(null) // Almacena el ID del rol que se está editando
-const nombreEditado = ref('') // Almacena el nuevo nombre del rol
+// Edición
+const rolEditando = ref(null);
+const nombreEditado = ref('');
 
+// Obtener roles
 const fetchRoles = async () => {
   try {
-    loading.value = true
-    roles.value = await getRoles()
+    loading.value = true;
+    roles.value = await getRoles();
   } catch (err) {
-    error.value = 'Error al obtener los roles'
-    console.error(err)
+    error.value = 'Error al cargar los roles.';
+    console.error(err);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-const agregarRol = async () => {
-  if (!nuevoRol.value.trim()) {
-    alert('El nombre del rol es obligatorio')
-    return
-  }
-  try {
-    await createRol({ nombre: nuevoRol.value })
-    nuevoRol.value = ''
-    await fetchRoles()
-  } catch (err) {
-    console.error('Error al agregar el rol:', err)
-  }
-}
+// Filtros computados
+const filteredRoles = computed(() => {
+  if (!searchQuery.value) return roles.value;
+  
+  const query = searchQuery.value.toLowerCase();
+  return roles.value.filter(rol => 
+    rol.nombre.toLowerCase().includes(query) ||
+    rol.id.toString().includes(query)
+  );
+});
 
-const eliminarRol = async (id) => {
-  if (!confirm('¿Estás seguro de que deseas eliminar este rol?')) return
+// Agregar rol
+const openAddRoleModal = () => {
+  nombreEditado.value = 'Nuevo Rol'; // Valor por defecto
+  rolEditando.value = 'new';
+};
 
-  try {
-    await deleteRol(id)
-    roles.value = roles.value.filter(rol => rol.id !== id)
-  } catch (err) {
-    console.error('Error al eliminar el rol:', err)
-  }
-}
-
+// Edición
 const iniciarEdicion = (rol) => {
-  rolEditando.value = rol.id
-  nombreEditado.value = rol.nombre
-}
+  rolEditando.value = rol.id;
+  nombreEditado.value = rol.nombre;
+};
 
 const cancelarEdicion = () => {
-  rolEditando.value = null
-  nombreEditado.value = ''
-}
+  rolEditando.value = null;
+  nombreEditado.value = '';
+};
 
 const guardarEdicion = async (id) => {
-  if (!nombreEditado.value.trim()) {
-    alert('El nombre del rol no puede estar vacío')
-    return
-  }
+  const guardarEdicion = async (id) => {
+  try {
+    if (id === 'new') {
+      await createRol({ nombre: nombreEditado.value });
+    } else {
+      await updateRol(id, { nombre: nombreEditado.value });
+    }
+    await fetchRoles();
+    cancelarEdicion();
+  } catch (err) {
+    console.error('Error al guardar el rol:', err);
+    error.value = 'Error al guardar el rol';
+  }}
+};
+
+// Eliminación
+const confirmarEliminacion = (id) => {
+  rolToDelete.value = id;
+  showConfirmationModal.value = true;
+};
+
+const eliminarRol = async () => {
+  if (!rolToDelete.value) return;
   
   try {
-    await updateRol(id, { nombre: nombreEditado.value })
-    roles.value = roles.value.map(rol => 
-      rol.id === id ? { ...rol, nombre: nombreEditado.value } : rol
-    )
-    cancelarEdicion()
-  } catch (err) {
-    console.error('Error al actualizar el rol:', err)
+    await deleteRol(rolToDelete.value);
+    await fetchRoles();
+    showConfirmationModal.value = false;
+    rolToDelete.value = null;
+  } catch (err: any) {
+    console.error('Error al eliminar el rol:', err.message);
+    error.value = err.message || 'Error al eliminar el rol. Por favor, inténtalo de nuevo.';
   }
-}
+};
 
-onMounted(fetchRoles)
+// Inicialización
+onMounted(() => {
+  fetchRoles();
+});
 </script>

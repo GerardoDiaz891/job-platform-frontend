@@ -90,7 +90,7 @@ export const getVacanteById = async (id: number) => {
   }
 }
 
-// Modulo de CVs
+// MODULO DE CVS (POSTULANTE)
 export const uploadCV = async (file: File, idVacante: number): Promise<CVResponse> => {
   const formData = new FormData()
   formData.append('file', file)
@@ -140,7 +140,7 @@ export const downloadCV = async (idVacante: number): Promise<Blob> => {
   }
 };
 
-//MODELO DE VACANTES (EMPRESARIAL)
+//MODULO DE VACANTES (EMPRESARIAL)
 export const getVacantesEmpresarial = async (): Promise<VacanteDTO[]> => {
   try {
     const { data } = await apiClient.get<VacanteDTO[]>('/api/Vacantes/mis-vacantes');
@@ -172,6 +172,24 @@ export const actualizarVacante = async (id: number, vacanteData: Partial<Vacante
   return data;
 };
 
+// MODULO DE ADMIN (USUARIOS)
+//POST Usuarios
+export const createUsuario = async (usuario: any) => {
+  try {
+    // Asegurarse de que la contraseña esté hasheada antes de enviar
+    const userToSend = {
+      ...usuario,
+      contraseña: usuario.contraseña // El backend se encarga del hashing
+    };
+    
+    const { data } = await apiClient.post("/api/Usuarios", userToSend);
+    return data;
+  } catch (error: any) {
+    console.error("Error al crear el usuario:", error.response?.data);
+    throw new Error(error.response?.data?.toString() || 'Error al crear el usuario');
+  }
+};
+
 //Usuarios GET
 export const getUsuarios = async () => {
   try {
@@ -183,17 +201,17 @@ export const getUsuarios = async () => {
   }
 };
 
-//POST Usuarios
-export const createUsuario = async (usuario: any) => {
-  try {
-    const { data } = await apiClient.post("/api/Usuarios", usuario);
-    return data;
-  } catch (error) {
-    console.error("Error al crear el usuario:", error);
-    throw error;
-  }
+export const updateUsuario = async (id: number, usuario: any) => {
+  const { data } = await apiClient.put(`/api/Usuarios/${id}`, usuario);
+  return data;
 };
 
+// Eliminar usuario
+export const deleteUsuario = async (id: number) => {
+  await apiClient.delete(`/api/Usuarios/${id}`);
+};
+
+// MODULO DE ADMIN (ROLES)
 // GET Roles
 export const getRoles = async () => {
   try {
@@ -207,34 +225,21 @@ export const getRoles = async () => {
 
 //Crear rol
 export const createRol = async (rolData: { nombre: string }) => {
-  try {
-    const { data } = await apiClient.post('/api/Rols', rolData)
-    return data
-  } catch (error) {
-    console.error('Error al crear el rol:', error)
-    throw error
-  }
-}
+  const { data } = await apiClient.post('/api/Rols', rolData);
+  return data;
+};
+
+export const updateRol = async (id: number, data: { nombre: string }) => {
+  const response = await apiClient.put(`/api/Rols/${id}`, { 
+    id: id,
+    nombre: data.nombre 
+  });
+  return response.data;
+};
 
 //Eliminar Rol
 export const deleteRol = async (id: number) => {
-  try {
-    await apiClient.delete(`/api/Rols/${id}`)
-  } catch (error) {
-    console.error('Error al eliminar el rol:', error)
-    throw error
-  }
-}
+  await apiClient.delete(`/api/Rols/${id}`);
+};
 
-//Editar Rol
-// Corrige las funciones de actualización de roles
-export const updateRol = async (id: number, data: { nombre: string }) => {
-  try {
-    console.log('Datos enviados al backend:', { nombre: data.nombre });
-    await apiClient.put(`/api/Rols/${id}`, { nombre: data.nombre });
-  } catch (error) {
-    console.error('Error al actualizar el rol:', error);
-    throw error;
-  }
-}
 
