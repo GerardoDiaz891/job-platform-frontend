@@ -133,17 +133,22 @@ const login = async () => {
     }
 
     const response = await loginUser(credentials)
-    localStorage.setItem('token', response.token)
-    console.log('token', response)
-    alert('Inicio de sesión exitoso.')
-    router.push('/')
-  } catch (error) {
-    console.error('Error al iniciar sesión:', error)
-    alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.')
-  } finally {
-    loading.value = false
-  }
+localStorage.setItem('token', response.token)
+console.log('token', response)
+alert('Inicio de sesión exitoso.')
+if (response.roleId === 1) {
+      router.push('/admin/dashboard')
+    } else {
+      router.push('/')
+    }
+} catch (error) {
+  console.error('Error al iniciar sesión:', error)
+  alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.')
+} finally {
+  loading.value = false
+}
 };
+
 </script>
 
 <style scoped>

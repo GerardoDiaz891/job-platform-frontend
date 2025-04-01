@@ -103,7 +103,7 @@
         
         <template v-else>
           <router-link 
-            to="/mi-perfil" 
+            to="/perfil-usuario" 
             class="nav-link"
           >
             Mi Perfil
