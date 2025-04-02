@@ -50,16 +50,16 @@ export const perfilUSer = async () => {
   return data
 }
 
-export const updateUser = async (id: number, update: any) => {
+export const updateUser = async (id: number, data: { nombreEmpresa: string }) => {
   try {
-    const { data } = await apiClient.put(`/api/Usuarios/${id}`, update)
-    return data
+    console.log(data.nombreEmpresa)
+    console.log('Datos enviados al backend:', { Id: 7, NombreEmpresa: data.nombreEmpresa })
+    await apiClient.put(`/api/Usuarios/${id}`, { Id: 7, NombreEmpresa: data.nombreEmpresa, id: 7 })
   } catch (error) {
-    console.error('Error al actualizar el usuario:', error)
+    console.error('Error al actualizar el rol:', error)
     throw error
   }
 }
-
 
 //GET de todas las vacantes
 export const getVacantes = async () => {
@@ -87,17 +87,13 @@ export const getVacanteById = async (id: number) => {
 export const uploadCV = async (file: File, idVacante: number): Promise<CVResponse> => {
   const formData = new FormData()
   formData.append('file', file)
-  
+
   try {
-    const { data } = await apiClient.post<CVResponse>(
-      `/api/CVs/upload/${idVacante}`, 
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    )
+    const { data } = await apiClient.post<CVResponse>(`/api/CVs/upload/${idVacante}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
     return data
   } catch (error) {
     const axiosError = error as AxiosError
@@ -123,7 +119,7 @@ export const checkExistingCV = async (idVacante: number): Promise<CVResponse | n
 export const downloadCV = async (idVacante: number): Promise<Blob> => {
   try {
     const response = await apiClient.get(`/api/CVs/download/${idVacante}`, {
-      responseType: 'blob'
+      responseType: 'blob',
     })
     return response.data
   } catch (error) {
@@ -131,39 +127,40 @@ export const downloadCV = async (idVacante: number): Promise<Blob> => {
     console.error('Error al descargar el CV:', axiosError.response?.data)
     throw axiosError
   }
-};
+}
 
 //Usuarios GET
 export const getUsuarios = async () => {
   try {
-    const { data } = await apiClient.get("/api/Usuarios");
-    return data;
+    const { data } = await apiClient.get('/api/Usuarios')
+    return data
   } catch (error) {
-    console.error("Error al obtener los usuarios:", error);
-    throw error;
+    console.error('Error al obtener los usuarios:', error)
+    throw error
   }
-};
+}
 
 //POST Usuarios
 export const createUsuario = async (usuario: any) => {
   try {
-    const { data } = await apiClient.post("/api/Usuarios", usuario);
-    return data;
+    const { data } = await apiClient.post('/api/Usuarios', usuario)
+    return data
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
-    throw error;
+    console.error('Error al crear el usuario:', error)
+    throw error
   }
-};
+}
 
-
-
-
-
-
-
-
-
-
+// DELETE Usuarios
+export const deleteUsuario = async (usuarioId: number) => {
+  try {
+    await apiClient.delete(`/api/Usuarios/${usuarioId}`)
+    console.log('Usuario eliminado exitosamente')
+  } catch (error) {
+    console.error('Error al eliminar el usuario:', error)
+    throw error
+  }
+}
 
 // GET Roles
 export const getRoles = async () => {
@@ -207,4 +204,3 @@ export const updateRol = async (id: number, data: { id: number; nombre: string }
     throw error
   }
 }
-

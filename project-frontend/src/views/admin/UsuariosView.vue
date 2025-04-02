@@ -9,7 +9,7 @@
         <h1 class="text-3xl font-bold">Usuarios</h1>
         <button
           @click="openAddUserModal"
-          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
         >
           + Agregar Usuario
         </button>
@@ -29,19 +29,25 @@
               <th class="py-2 px-4 text-left">Correo</th>
               <th class="py-2 px-4 text-left">Rol</th>
               <th class="py-2 px-4 text-left">Empresa</th>
+              <th class="py-2 px-4 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="usuario in usuarios"
-              :key="usuario.idUsuario"
+              :key="usuario.id"
               class="hover:bg-gray-100"
             >
-              <td class="py-2 px-4">{{ usuario.idUsuario }}</td>
+              <td class="py-2 px-4">{{ usuario.id }}</td>
               <td class="py-2 px-4">{{ usuario.nombre }}</td>
               <td class="py-2 px-4">{{ usuario.correo }}</td>
               <td class="py-2 px-4">{{ usuario.nombreRol }}</td>
               <td class="py-2 px-4">{{ usuario.nombreEmpresa || "N/A" }}</td>
+              <td class="py-2 px-4">
+                <button @click="eliminarUsuario(usuario.id)"
+                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                >Eliminar</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -123,9 +129,8 @@
                 required
               >
                 <option value="1">Administrador</option>
-                <option value="2">Reclutador</option>
-                <option value="8">Postulante</option>
-                <!-- Agrega más opciones según los roles disponibles en tu sistema -->
+                <option value="2">Empresarial</option>
+                <option value="3">Postulante</option>
               </select>
             </div>
 
@@ -154,7 +159,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import SidebarComponent from "@/components/SidebarComponent.vue";
-import { getUsuarios, createUsuario } from "@/services/api";
+import { getUsuarios, createUsuario, deleteUsuario, updateUsuario } from "@/services/api";
 
 // Estado de usuarios y modal
 const usuarios = ref([]);
@@ -168,8 +173,8 @@ const nuevoUsuario = ref({
   correo: "",
   contraseña: "",
   confirmarContraseña: "",
-  idRol: 1, // Valor predeterminado (Administrador)
-  nombreRol: "Administrador", // Esto se actualiza dinámicamente
+  idRol: 1,
+  nombreRol: "Administrador",
   nombreEmpresa: "",
   tipoEmpresa: "",
   direccion: "",
@@ -204,11 +209,34 @@ const agregarUsuario = async () => {
   try {
     await createUsuario(nuevoUsuario.value);
     mostrarModal.value = false;
-    fetchUsuarios(); // Recargar lista
+    fetchUsuarios();
     alert("Usuario agregado exitosamente.");
   } catch (err) {
     console.error("Error al agregar el usuario:", err);
     alert("Hubo un error al crear el usuario.");
+  }
+};
+
+// Eliminar usuario
+const eliminarUsuario = async (usuarioId: number) => {
+  console.log("ID del usuario a eliminar:", usuarioId);
+
+  if (typeof usuarioId !== "number" || usuarioId <= 0) {
+    alert("Error: el ID del usuario es inválido.");
+    return;
+  }
+
+  const confirmacion = confirm("¿Estás seguro de que deseas eliminar este usuario?");
+  if (!confirmacion) return;
+
+  try {
+    const respuesta = await deleteUsuario(usuarioId);
+    console.log("Respuesta del servidor:", respuesta);
+    await fetchUsuarios();
+    alert("Usuario eliminado exitosamente.");
+  } catch (err) {
+    console.error("Error al eliminar el usuario:", err);
+    alert("Hubo un error al eliminar el usuario.");
   }
 };
 
@@ -221,7 +249,7 @@ watch(() => nuevoUsuario.value.idRol, (newValue) => {
     case 2:
       nuevoUsuario.value.nombreRol = "Reclutador";
       break;
-    case 8:
+    case 3:
       nuevoUsuario.value.nombreRol = "Postulante";
       break;
     default:

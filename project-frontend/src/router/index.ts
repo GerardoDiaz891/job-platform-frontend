@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
+import DadshbaordUsuario from '@/views/Usuarios/DadshbaordUsuario.vue'
 import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
 import NotFound from '../components/NotFound.vue'
-import Vacante from '@/components/Vacante.vue'
+import Vacante from '@/components/Vacante.vue"
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,6 @@ const router = createRouter({
     {
       path: '/PerfilEmpresa',
       component: PerfilEmpresaVue,
-      meta: { requiereAuth: true },
     },
     {
       path: '/Nosotros',
@@ -22,10 +22,9 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/perfil/usuario',
+      path: '/perfil-usuario',
       name: 'PerfilUsuario',
       component: () => import('../views/PerfilUsuario.vue'),
-      meta: { requiereAuth: true },
     },
     {
       path: '/login',
@@ -41,19 +40,18 @@ const router = createRouter({
       path: '/UploadCV',
       name: 'UploadCV',
       component: () => import('../views/UploadCVView.vue'),
-      meta: { requiereAuth: true },
     },
     {
       path: '/Postulation',
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'),
-      meta: { requiereAuth: true },
     },
     {
       path: '/admin/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
     },
+
     {
       path: '/:catchAll(.*)',
       component: NotFound,
@@ -67,13 +65,11 @@ const router = createRouter({
       path: '/admin/usuarios',
       name: 'Usuarios',
       component: () => import('@/views/admin/UsuariosView.vue'),
-      meta: { requiereAuth: true, requiereAdmin: true },
     },
     {
       path: '/admin/create-user',
       name: 'CreateUser',
       component: () => import('@/views/admin/CreateUserView.vue'),
-      meta: { requiereAuth: true, requiereAdmin: true },
     },
   ],
 })
@@ -90,7 +86,7 @@ router.beforeEach((to, from, next) => {
     next('/admin/dashboard')
   } else if (to.path === '/login' && token && userRole === 'administrador') {
     // Si un administrador intenta ir a login, redirigir al dashboard
-    next('/admin/dashboard')
+    next('/')
   } else {
     next()
   }

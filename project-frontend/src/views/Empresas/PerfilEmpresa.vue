@@ -61,22 +61,21 @@ const mensajeExito = ref('')
 async function cargarDatos() {
   try {
     const datosGuardados = localStorage.getItem('empresa')
-    if (datosGuardados) {
-      empresa.value = JSON.parse(datosGuardados)
-    } else {
-      const dataInfo = await perfilUSer()
-      if (dataInfo) {
-        empresa.value = {
-          id: dataInfo.id,
-          nombreEmpresa: dataInfo.nombreEmpresa || '',
-          descripcionEmpresa: dataInfo.descripcionEmpresa || '',
-          direccion: dataInfo.direccion || '',
-          correo: dataInfo.correo || '',
-          telefono: dataInfo.telefono || '',
-          sitioWeb: dataInfo.sitioWeb || '',
-        }
-        localStorage.setItem('empresa', JSON.stringify(empresa.value))
+    console.log(datosGuardados)
+
+    const dataInfo = await perfilUSer()
+    console.log('perfil empresas', dataInfo.id)
+    if (dataInfo) {
+      empresa.value = {
+        id: dataInfo,
+        nombreEmpresa: dataInfo.nombreEmpresa || '',
+        descripcionEmpresa: dataInfo.descripcionEmpresa || '',
+        direccion: dataInfo.direccion || '',
+        correo: dataInfo.correo || '',
+        telefono: dataInfo.telefono || '',
+        sitioWeb: dataInfo.sitioWeb || '',
       }
+      localStorage.setItem('empresa', JSON.stringify(empresa.value))
     }
   } catch (error) {
     console.error('Error al obtener datos de la empresa:', error)
@@ -104,8 +103,11 @@ async function guardarCambios() {
 function toggleEditar() {
   modoEdicion.value = !modoEdicion.value
 }
-
-onMounted(cargarDatos)
+const obj = {
+  id: 7,
+  nombreEmpresa: 'empresarias',
+}
+onMounted(cargarDatos, await updateUser(7, obj))
 </script>
 
 <style scoped>
