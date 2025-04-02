@@ -10,7 +10,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
     <div class="max-w-5xl mx-auto text-center">
       <h2 class="text-4xl font-extrabold text-gray-800 mb-6">Sobre GetWork</h2>
       <p class="text-lg text-gray-600 mb-8">
-        GetWork es una plataforma innovadora diseñada para conectar empresas con talento en búsqueda de nuevas oportunidades. 
+        GetWork es una plataforma innovadora diseñada para conectar empresas con talento en búsqueda de nuevas oportunidades.
         Facilitamos la publicación de vacantes de trabajo y ayudamos a los candidatos a encontrar el empleo ideal de manera rápida y sencilla.
       </p>
     </div>
@@ -31,16 +31,21 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
         <p class="text-gray-600 mt-2">Encuentra el empleo ideal en cuestión de minutos.</p>
       </div>
     </div>
-
+    <br>
+    <br>
+    <br>
     <div class="max-w-5xl mx-auto text-center mt-12">
       <h3 class="text-3xl font-bold text-gray-800">Nuestra misión</h3>
       <p class="text-lg text-gray-600 mt-4">
-        En GetWork, nos comprometemos a simplificar el proceso de búsqueda de empleo y contratación, 
+        En GetWork, nos comprometemos a simplificar el proceso de búsqueda de empleo y contratación,
         brindando herramientas eficientes tanto para reclutadores como para candidatos.
       </p>
+      <br>
     </div>
+    <br>
+    <br>
   </section>
 
-  
+
   <FooterComponent />
 </template>

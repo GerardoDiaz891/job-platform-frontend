@@ -136,7 +136,7 @@ const login = async () => {
 localStorage.setItem('token', response.token)
 console.log('token', response)
 alert('Inicio de sesión exitoso.')
-if (response.roleId === 1) {
+if (response.role === 1) {
       router.push('/admin/dashboard')
     } else {
       router.push('/')

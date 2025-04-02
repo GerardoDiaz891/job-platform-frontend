@@ -2,7 +2,7 @@
   <HeaderComponent />
   <div class="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
     <h1 class="text-3xl font-extrabold text-center text-blue-700 mb-6">Detalles de la Vacante</h1>
-    
+
     <div v-if="vacante" class="space-y-6">
       <div class="bg-gray-100 p-4 rounded-lg">
         <p class="text-lg text-gray-700"><strong class="text-gray-900">Nombre:</strong> {{ vacante.nombre }}</p>
@@ -35,28 +35,28 @@
       <div v-if="error" class="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
         <p>{{ error }}</p>
       </div>
-      
+
       <div v-if="successMessage" class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700">
         <p>{{ successMessage }}</p>
       </div>
 
       <div class="flex justify-center mt-6 space-x-4">
-        <button 
-          @click="goBack" 
+        <button
+          @click="goBack"
           class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200"
         >
           Regresar
         </button>
-        
+
         <template v-if="!hasApplied">
-          <input 
+          <input
             ref="cvInput"
-            type="file" 
-            accept=".pdf" 
+            type="file"
+            accept=".pdf"
             @change="handleFileUpload"
             class="hidden"
           />
-          <button 
+          <button
             @click="triggerFileInput"
             :disabled="isLoading"
             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -71,21 +71,22 @@
             <span v-else>Postularse</span>
           </button>
         </template>
-        
-        <button 
-          v-else 
+
+        <button
+          v-else
           disabled
+
           class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md cursor-default"
         >
           Ya has aplicado
         </button>
       </div>
     </div>
-    
+
     <div v-else-if="error" class="text-center text-red-500 font-semibold mt-6">
       <p>Error al cargar la vacante: {{ error }}</p>
     </div>
-    
+
     <div v-else class="text-center text-gray-500 mt-6">
       <div class="flex justify-center">
         <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -188,7 +189,7 @@ export default {
     }
 
     const goBack = () => {
-      router.push('/vacantes')
+      router.push('/')
     }
 
     onMounted(() => {
