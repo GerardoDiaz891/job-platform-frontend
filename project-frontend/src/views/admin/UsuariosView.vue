@@ -33,23 +33,34 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="usuario in usuarios"
-              :key="usuario.id"
-              class="hover:bg-gray-100"
-            >
-              <td class="py-2 px-4">{{ usuario.id }}</td>
-              <td class="py-2 px-4">{{ usuario.nombre }}</td>
-              <td class="py-2 px-4">{{ usuario.correo }}</td>
-              <td class="py-2 px-4">{{ usuario.nombreRol }}</td>
-              <td class="py-2 px-4">{{ usuario.nombreEmpresa || "N/A" }}</td>
-              <td class="py-2 px-4">
-                <button @click="eliminarUsuario(usuario.id)"
-                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                >Eliminar</button>
-              </td>
-            </tr>
-          </tbody>
+  <tr
+    v-for="usuario in usuarios"
+    :key="usuario.id"
+    class="hover:bg-gray-100"
+  >
+    <td class="py-2 px-4">{{ usuario.id }}</td>
+    <td class="py-2 px-4">{{ usuario.nombre }}</td>
+    <td class="py-2 px-4">{{ usuario.correo }}</td>
+    <td class="py-2 px-4">{{ usuario.nombreRol }}</td>
+    <td class="py-2 px-4">{{ usuario.nombreEmpresa || "N/A" }}</td>
+    <td class="py-2 px-4">
+      <button
+      @click="editarUsuario(usuario)"
+        class="ml-2 text-white bg-blue-400 hover:bg-blue-600 py-2 px-4 rounded-md"
+       >
+        ✏️ Editar
+        </button>
+
+      <button
+        @click="eliminarUsuario(usuario.id)"
+        class="text-white bg-red-400 hover:bg-red-600 py-2 px-4 rounded-md"
+      >
+        🗑️ Eliminar
+      </button>
+
+    </td>
+  </tr>
+</tbody>
         </table>
       </div>
 
@@ -152,6 +163,86 @@
           </form>
         </div>
       </div>
+
+      <!-- Modal para Editar Usuario -->
+      <div
+  v-if="mostrarModalEditar"
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+    <h2 class="text-2xl font-bold mb-4">Editar Usuario</h2>
+
+    <form @submit.prevent="guardarEdicionUsuario">
+      <div class="mb-4">
+        <label class="block text-gray-700">Nombre</label>
+        <input
+          v-model="usuarioEditado.nombre"
+          type="text"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+          required
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700">Correo</label>
+        <input
+          v-model="usuarioEditado.correo"
+          type="email"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+          required
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700">Empresa</label>
+        <input
+          v-model="usuarioEditado.nombreEmpresa"
+          type="text"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700">Tipo de Empresa</label>
+        <input
+          v-model="usuarioEditado.tipoEmpresa"
+          type="text"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+        />
+      </div>
+
+      <!-- Selección de Rol -->
+      <div class="mb-4">
+        <label class="block text-gray-700">Rol</label>
+        <select
+          v-model="usuarioEditado.idRol"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+          required
+        >
+          <option value="1">Administrador</option>
+          <option value="2">Empresarial</option>
+          <option value="3">Postulante</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end space-x-4 mt-4">
+        <button
+          type="button"
+          @click="mostrarModalEditar = false"
+          class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
     </div>
   </div>
 </template>
@@ -166,6 +257,7 @@ const usuarios = ref([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const mostrarModal = ref(false);
+const mostrarModalEditar = ref(false);
 
 // Datos para el nuevo usuario
 const nuevoUsuario = ref({
@@ -181,6 +273,16 @@ const nuevoUsuario = ref({
   telefono: "",
   sitioWeb: "",
   descripcionEmpresa: "",
+});
+
+// Datos del usuario para edición
+const usuarioEditado = ref({
+  id: null,
+  nombre: "",
+  correo: "",
+  nombreEmpresa: "",
+  tipoEmpresa: "",
+  idRol: null,
 });
 
 // Obtener usuarios al cargar
@@ -199,6 +301,12 @@ const openAddUserModal = () => {
   mostrarModal.value = true;
 };
 
+// Abrir modal para editar usuario
+const editarUsuario = (usuario: any) => {
+  usuarioEditado.value = { ...usuario }; // Copia los datos del usuario seleccionado
+  mostrarModalEditar.value = true; // Muestra el modal
+};
+
 // Crear nuevo usuario
 const agregarUsuario = async () => {
   if (nuevoUsuario.value.contraseña !== nuevoUsuario.value.confirmarContraseña) {
@@ -214,6 +322,34 @@ const agregarUsuario = async () => {
   } catch (err) {
     console.error("Error al agregar el usuario:", err);
     alert("Hubo un error al crear el usuario.");
+  }
+};
+
+// Guardar cambios del usuario editado
+const guardarEdicionUsuario = async () => {
+  if (!usuarioEditado.value.id) {
+    alert("No se ha seleccionado un usuario para editar.");
+    return;
+  }
+
+  try {
+    // Llama al servicio updateUsuario y pasa los datos actualizados
+    await updateUsuario(usuarioEditado.value.id, usuarioEditado.value);
+    alert("Usuario actualizado exitosamente.");
+
+    // Actualiza la lista de usuarios
+    await fetchUsuarios();
+
+    // Cierra el modal
+    mostrarModalEditar.value = false;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error al actualizar el usuario:", error.message);
+      alert(`Hubo un error al actualizar el usuario: ${error.message}`);
+    } else {
+      console.error("Error desconocido al actualizar el usuario.");
+      alert("Ocurrió un error inesperado.");
+    }
   }
 };
 

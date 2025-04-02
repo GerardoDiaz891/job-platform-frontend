@@ -155,6 +155,16 @@ export const createUsuario = async (usuario: any) => {
   }
 };
 
+// PUT Usuario
+export const updateUsuario = async (usuarioId: number, usuario: any) => {
+  try {
+    const { data } = await apiClient.put(`/api/Usuarios/${usuarioId}`, usuario);
+    return data;
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    throw error;
+  }
+};
 
 
 // DELETE Usuarios

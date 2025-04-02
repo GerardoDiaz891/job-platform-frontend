@@ -67,6 +67,11 @@ const router = createRouter({
       component: () => import("@/views/admin/UsuariosView.vue"),
     },
     {
+      path: "/admin/roles",
+      name: "Roles",
+      component: () => import("@/views/admin/RolesView.vue"),
+    },
+    {
       path: "/admin/create-user",
       name: "CreateUser",
       component: () => import("@/views/admin/CreateUserView.vue"),

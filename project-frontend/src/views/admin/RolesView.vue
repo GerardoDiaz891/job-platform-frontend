@@ -8,7 +8,7 @@
       </h1>
 
       <div class="text-center mb-8">
-        <input 
+        <input
           v-model="nuevoRol"
           type="text"
           placeholder="Nombre del rol"
@@ -41,16 +41,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr 
-                v-for="rol in roles" 
-                :key="rol.id" 
+              <tr
+                v-for="rol in roles"
+                :key="rol.id"
                 class="hover:bg-blue-50 transition-colors duration-200 even:bg-gray-50"
               >
                 <td class="px-6 py-4 border-b border-gray-200">
                   <div v-if="rolEditando === rol.id">
-                    <input 
-                      v-model="nombreEditado" 
-                      type="text" 
+                    <input
+                      v-model="nombreEditado"
+                      type="text"
                       class="border px-2 py-1 rounded-md"
                     />
                   </div>
@@ -60,29 +60,29 @@
                 </td>
                 <td class="px-6 py-4 border-b border-gray-200">
                   <div class="flex space-x-2 justify-center">
-                    <button 
+                    <button
                       v-if="rolEditando === rol.id"
                       class="text-white bg-green-400 hover:bg-green-600 py-2 px-4 rounded-md"
                       @click="guardarEdicion(rol.id)"
                     >
                       💾 Guardar
                     </button>
-                    <button 
+                    <button
                       v-if="rolEditando === rol.id"
                       class="text-white bg-gray-400 hover:bg-gray-600 py-2 px-4 rounded-md"
                       @click="cancelarEdicion"
                     >
                       ❌ Cancelar
                     </button>
-                    <button 
-                      v-else 
+                    <button
+                      v-else
                       class="text-white bg-blue-400 hover:bg-blue-600 py-2 px-4 rounded-md"
                       @click="iniciarEdicion(rol)"
                     >
                       ✏️ Editar
                     </button>
-                    <button 
-                      class="text-white bg-red-400 hover:bg-red-600 py-2 px-4 rounded-md" 
+                    <button
+                      class="text-white bg-red-400 hover:bg-red-600 py-2 px-4 rounded-md"
                       @click="eliminarRol(rol.id)"
                     >
                       🗑️ Eliminar
@@ -167,10 +167,10 @@ const guardarEdicion = async (id) => {
     alert('El nombre del rol no puede estar vacío')
     return
   }
-  
+
   try {
     await updateRol(id, { nombre: nombreEditado.value })
-    roles.value = roles.value.map(rol => 
+    roles.value = roles.value.map(rol =>
       rol.id === id ? { ...rol, nombre: nombreEditado.value } : rol
     )
     cancelarEdicion()
