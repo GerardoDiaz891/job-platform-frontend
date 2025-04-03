@@ -18,6 +18,7 @@ const router = createRouter({
           next(); // Continúa si está autenticado
         }
       }
+
     },
     {
       path: '/PerfilEmpresa',
@@ -44,7 +45,7 @@ const router = createRouter({
         }
       }
     },
-    
+
     {
       path: '/perfil-usuario',
       name: 'PerfilUsuario',
@@ -58,12 +59,12 @@ const router = createRouter({
         }
       }
     },
-    
+
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
-    
+
     },
     {
       path: '/Register',
