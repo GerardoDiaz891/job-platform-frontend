@@ -9,11 +9,8 @@
             </div>
             <router-link 
               to="/empresarial/crear-vacante"
-              class="btn-create"
+              class="mr-5 btn-create"
             >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-              </svg>
               Nueva Vacante
             </router-link>
           </div>
@@ -131,7 +128,7 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import { getVacantesEmpresarial } from '@/services/api';
-  import type { VacanteDTO } from '@/types/VacantesDTO';
+  import type { VacanteDTO } from '@/stores/VacantesDTO';
   
   export default defineComponent({
     name: 'VacantesEmpresarial',

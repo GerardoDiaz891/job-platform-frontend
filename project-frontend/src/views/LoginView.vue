@@ -78,17 +78,6 @@
             <span class="px-2 bg-white text-gray-500">O inicia sesión con</span>
           </div>
         </div>
-
-        <div class="mt-6 grid grid-cols-2 gap-3">
-          <button type="button" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <img class="h-5 w-5" src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
-            <span class="ml-2">Google</span>
-          </button>
-          <button type="button" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <img class="h-5 w-5" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Microsoft_Azure.svg" alt="Microsoft">
-            <span class="ml-2">Microsoft</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>

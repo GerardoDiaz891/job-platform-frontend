@@ -45,6 +45,7 @@ const router = createRouter({
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'),
     },
+    // RUTAS DE ADMIN
     {
       path: '/admin/dashboard',
       name: 'Dashboard',

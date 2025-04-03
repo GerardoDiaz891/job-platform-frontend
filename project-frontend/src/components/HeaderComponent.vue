@@ -63,7 +63,6 @@
         
         <!-- Mostrar solo para usuarios empresariales -->
         <router-link 
-          v-if="userRole === 'Empresarial'"
           to="/empresarial/vacantes" 
           class="nav-link"
         >
