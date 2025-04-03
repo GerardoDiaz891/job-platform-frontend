@@ -362,25 +362,27 @@ const closeModal = () => {
 // Guardar usuario
 const saveUser = async (userData) => {
   try {
-    if (userData.idUsuario) {
-      await updateUsuario(userData.idUsuario, userData);
+    if (userData.id) {
+      // Para edición
+      await updateUsuario(userData.id, userData);
     } else {
+      // Para creación
       await createUsuario(userData);
     }
     await fetchUsuarios();
     showModal.value = false;
   } catch (err) {
     console.error('Error al guardar el usuario:', err);
-    error.value = 'Error al guardar el usuario';
+    error.value = err.message || 'Error al guardar el usuario';
   }
 };
 
 const confirmDelete = (user) => {
-  if (!user?.idUsuario) {
+  if (!user?.id) {
     error.value = 'Usuario no válido';
     return;
   }
-  userToDelete.value = user.idUsuario; // Guardar solo el ID
+  userToDelete.value = user.id;
   showConfirmationModal.value = true;
 };
 

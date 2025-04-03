@@ -201,9 +201,31 @@ export const getUsuarios = async () => {
   }
 };
 
+// Actualizar usuario
 export const updateUsuario = async (id: number, usuario: any) => {
-  const { data } = await apiClient.put(`/api/Usuarios/${id}`, usuario);
-  return data;
+  try {
+    // Mapear los nombres de propiedades para que coincidan con el backend
+    const userToUpdate = {
+      id: id,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      contraseña: usuario.contraseña || '', // Enviar vacío si no hay cambio
+      idRol: usuario.idRol,
+      nombreEmpresa: usuario.nombreEmpresa,
+      tipoEmpresa: usuario.tipoEmpresa,
+      direccion: usuario.direccion,
+      telefono: usuario.telefono,
+      sitioWeb: usuario.sitioWeb,
+      descripcionEmpresa: usuario.descripcionEmpresa,
+      idCV: usuario.idCV || 0
+    };
+    
+    const { data } = await apiClient.put(`/api/Usuarios/${id}`, userToUpdate);
+    return data;
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    throw error;
+  }
 };
 
 // Eliminar usuario

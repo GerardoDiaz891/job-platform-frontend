@@ -159,8 +159,37 @@ const close = () => {
 };
 
 const submitForm = () => {
-  // Eliminar validación de contraseñas
-  const { confirmarContraseña, ...userToSave } = formData.value;
-  emit('save', userToSave);
+  // Validar contraseñas solo para nuevo usuario o cuando se cambia la contraseña
+  if ((!props.user.idUsuario || formData.value.contraseña) && 
+      formData.value.contraseña !== formData.value.confirmarContraseña) {
+    passwordError.value = 'Las contraseñas no coinciden';
+    return;
+  }
+  
+  // Preparar datos para enviar
+  const userData = {
+    nombre: formData.value.nombre,
+    correo: formData.value.correo,
+    idRol: formData.value.idRol,
+    nombreEmpresa: formData.value.nombreEmpresa,
+    tipoEmpresa: formData.value.tipoEmpresa,
+    direccion: formData.value.direccion,
+    telefono: formData.value.telefono,
+    sitioWeb: formData.value.sitioWeb,
+    descripcionEmpresa: formData.value.descripcionEmpresa,
+    idCV: formData.value.idCV || 0
+  };
+  
+  // Solo incluir contraseña si se está creando o cambiando
+  if (!props.user.idUsuario || formData.value.contraseña) {
+    userData.contraseña = formData.value.contraseña;
+  }
+  
+  // Si es edición, incluir el ID
+  if (props.user.idUsuario) {
+    userData.id = props.user.idUsuario;
+  }
+  
+  emit('save', userData);
 };
 </script>
