@@ -190,8 +190,6 @@ import { getRoles } from '@/services/api';
 import ConfirmationModal from '@/components/ConfirmationModal.vue';
 import UserModal from '@/components/admin/UserModal.vue';
 
-
-
 // Estado
 const usuarios = ref([]);
 const roles = ref([]);

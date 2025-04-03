@@ -63,7 +63,9 @@
           Admin Panel
         </router-link>
 
-        <router-link to="/PerfilEmpresa" class="nav-link"> Perfil Empresa </router-link>
+        <router-link v-if="userRole === 'Empresarial'" to="/PerfilEmpresa" class="nav-link">
+           Perfil Empresa
+           </router-link>
 
         <router-link to="/Nosotros" class="nav-link"> Nosotros</router-link>
 
@@ -75,7 +77,9 @@
         </template>
 
         <template v-else>
-          <router-link to="/perfil-usuario" class="nav-link"> Mi Perfil </router-link>
+<router-link v-if="userRole === 'Postulante'" to="/perfil-usuario" class="nav-link">
+   Mi Perfil 
+  </router-link>
 
           <button @click="logout" class="btn-danger">Cerrar Sesión</button>
         </template>
