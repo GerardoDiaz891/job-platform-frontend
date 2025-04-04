@@ -34,7 +34,7 @@
       ]">
 
         <!-- Enlaces comunes -->
-        <router-link to="/" class="nav-link"> Vacantes </router-link>
+        <router-link to="/" class="nav-link"> Home </router-link>
 
         <!-- Mostrar solo para usuarios empresariales -->
         <router-link v-if="userRole === 'Empresarial'" to="/empresarial/vacantes" class="nav-link">

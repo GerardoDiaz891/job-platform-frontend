@@ -1,16 +1,14 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <HeaderComponent />
+    <div class="container mx-auto px-4 py-8 flex-grow">
       <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 mb-8 text-white shadow-lg">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div class="mb-4 md:mb-0">
             <h1 class="text-3xl font-bold">Mis Vacantes</h1>
             <p class="text-blue-100">Administra las vacantes de tu empresa</p>
           </div>
-          <router-link to="/empresarial/crear-vacante" class="btn-create">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+          <router-link to="/empresarial/crear-vacante" class=" pr-8 btn-create">
             Nueva Vacante
           </router-link>
         </div>
@@ -74,7 +72,6 @@
               ]">
                 {{ vacante.cVs?.length ?? 0 }} postulante{{ (vacante.cVs?.length ?? 0) !== 1 ? 's' : '' }}
               </span>
-              
             </div>
 
             <p class="text-gray-600 mb-4">{{ truncateDescription(vacante.descripcion) }}</p>
@@ -86,7 +83,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span class="text-gray-700">${{ vacante.salario.toLocaleString() }}</span>
+                <span class="text-gray-700">{{ formatCurrency(vacante.salario) }}</span>
               </div>
 
               <div class="flex items-center">
@@ -115,25 +112,30 @@
                 Ver detalles
               </router-link>
               <span class="text-xs text-gray-500 self-center">
-                Publicada el {{ formatDate(vacante.fechaPublicacion ?? new Date())
- }}
+                Publicada el {{ formatDate(vacante.fechaPublicacion) }}
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <FooterComponent />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { EmpresarialService } from '@/services/EmpresarialService'
+import { EmpresarialService } from '@/services/empresarialService';
 import type { VacanteDTO } from '@/interfaces/VacantesDTO';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+import FooterComponent from '@/components/FooterComponent.vue';
 
 export default defineComponent({
   name: 'VacantesEmpresarial',
-
+  components: {
+    HeaderComponent,
+    FooterComponent
+  },
   data() {
     return {
       vacantes: [] as VacanteDTO[],
@@ -141,30 +143,34 @@ export default defineComponent({
       error: null as string | null
     };
   },
-
   methods: {
     truncateDescription(desc: string): string {
       return desc.length > 120 ? `${desc.substring(0, 120)}...` : desc;
     },
-
-    formatDate(dateString: string | Date) {
+    formatDate(dateString: string | Date | undefined): string {
+      if (!dateString) return 'Fecha no disponible';
       const date = new Date(dateString);
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
       });
+    },
+    formatCurrency(amount: number) {
+      return new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN'
+      }).format(amount);
     }
   },
-
   async created() {
     try {
-      this.vacantes = await EmpresarialService.getVacantes()
+      this.vacantes = await EmpresarialService.getMisVacantes();
     } catch (error) {
-      this.error = error instanceof Error ? error.message : 'Error al cargar las vacantes'
-      console.error('Error al cargar vacantes:', error)
+      this.error = error instanceof Error ? error.message : 'Error al cargar las vacantes';
+      console.error('Error al cargar vacantes:', error);
     } finally {
-      this.loading = false
+      this.loading = false;
     }
   }
 });

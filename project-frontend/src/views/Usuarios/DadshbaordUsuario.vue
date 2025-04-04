@@ -1,5 +1,5 @@
 <script setup>
-import Vacantes from '@/components/Vacantes.vue';
+import Vacantes from '@/components/HomeView.vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import FooterComponent from '@/components/FooterComponent.vue';
 </script>

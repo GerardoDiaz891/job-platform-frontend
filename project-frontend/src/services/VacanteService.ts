@@ -18,12 +18,12 @@ export const VacanteService = {
   // Obtener Vacantes por ID
   async getVacanteById(id: number): Promise<VacanteDTO> {
     try {
-      const { data } = await apiClient.get<VacanteDTO>(`/api/Vacantes/${id}`)
-      return data
+      const { data } = await apiClient.get<VacanteDTO>(`/api/Vacantes/${id}`);
+      return data;
     } catch (error) {
-      const axiosError = error as AxiosError
-      console.error(`Error al obtener la vacante con ID ${id}:`, axiosError.response?.data)
-      throw axiosError
+      const axiosError = error as AxiosError;
+      console.error('Error al obtener vacante:', axiosError.response?.data);
+      throw axiosError;
     }
-  }
+  },
 }

@@ -1,6 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <HeaderComponent />
+    <div class="container mx-auto px-4 py-8 flex-grow">
       <router-link to="/empresarial/vacantes"
         class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 group transition-colors">
         <svg class="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor"
@@ -52,7 +53,6 @@
           </div>
         </div>
 
-        <!-- Contenido principal -->
         <div class="p-6">
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
@@ -69,7 +69,6 @@
                 </div>
               </div>
 
-              <!-- Habilidades requeridas -->
               <div v-if="vacante.habilidadesRequeridas" class="mb-8">
                 <h2 class="text-xl font-semibold mb-4 flex items-center">
                   <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +86,6 @@
               </div>
             </div>
 
-            <!-- Columna derecha para Detalles -->
             <div class="lg:col-span-1">
               <div class="bg-gray-50 rounded-lg p-5">
                 <h2 class="text-xl font-semibold mb-4 flex items-center">
@@ -97,23 +95,19 @@
                   </svg>
                   Detalles
                 </h2>
-
                 <div class="space-y-4">
                   <div>
                     <h3 class="font-medium text-gray-700">Salario:</h3>
-                    <p class="text-lg font-semibold">${{ vacante.salario.toLocaleString() }}</p>
+                    <p class="text-lg font-semibold">{{ formatCurrency(vacante.salario) }}</p>
                   </div>
-
                   <div>
                     <h3 class="font-medium text-gray-700">Horario:</h3>
                     <p>{{ vacante.horario || 'No especificado' }}</p>
                   </div>
-
                   <div>
                     <h3 class="font-medium text-gray-700">Ubicación:</h3>
                     <p>{{ vacante.ubicacion || 'No especificado' }}</p>
                   </div>
-
                   <div>
                     <h3 class="font-medium text-gray-700">Fecha de expiración:</h3>
                     <p>{{ formatDate(vacante.fechaExpiracion) }}</p>
@@ -153,14 +147,14 @@
                     </p>
                   </div>
                   <div class="flex space-x-3">
-                    <button @click="descargarCV(cv.idVacante, cv.idUsuario)" class="btn-download">
+                    <button @click="downloadCV(cv.idVacante)" class="btn-download">
                       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
                       Descargar CV
                     </button>
-                    <button @click="contactarPostulante(cv.idUsuario)" class="btn-contact">
+                    <button @click="contactApplicant(cv.idUsuario)" class="btn-contact">
                       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -175,78 +169,97 @@
         </div>
       </div>
     </div>
+    <FooterComponent />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { EmpresarialService } from '@/services/EmpresarialService'
-import type { VacanteDTO, CVDTO } from '@/interfaces/VacantesDTO';
+<script>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { EmpresarialService } from '@/services/empresarialService';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+import FooterComponent from '@/components/FooterComponent.vue';
 
-export default defineComponent({
-  name: 'DetalleVacante',
+export default {
+  components: {
+    HeaderComponent,
+    FooterComponent,
+  },
+  setup() {
+    const route = useRoute();
+    const vacante = ref(null);
+    const loading = ref(true);
+    const error = ref(null);
 
-  data() {
+    // Obtener detalles de la vacante
+    const fetchVacante = async () => {
+      try {
+        const id = parseInt(route.params.id);
+        if (isNaN(id)) throw new Error('ID de vacante inválido');
+
+        const data = await EmpresarialService.getVacanteById(id);
+        if (!data) throw new Error('Vacante no encontrada');
+        vacante.value = data;
+      } catch (err) {
+        error.value = err.message || 'Error al cargar la vacante';
+        console.error('Error:', err);
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // Descargar CV
+    const downloadCV = async (idVacante) => {
+      try {
+        const blob = await EmpresarialService.downloadApplicantCV(idVacante);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `CV-Vacante-${idVacante}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        error.value = 'Error al descargar el CV. Inténtalo nuevamente.';
+        console.error('Error al descargar CV:', err);
+      }
+    };
+
+    // Contactar al postulante (placeholder)
+    const contactApplicant = (idUsuario) => {
+      console.log(`Contactando al usuario ${idUsuario}`);
+      // Implementar lógica de contacto si es necesario
+    };
+
+    // Formatear fecha
+    const formatDate = (dateString) => {
+      if (!dateString) return 'Fecha no especificada';
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('es-MX', options);
+    };
+
+    // Formatear moneda
+    const formatCurrency = (amount) => {
+      return new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+      }).format(amount);
+    };
+
+    onMounted(() => {
+      fetchVacante();
+    });
+
     return {
-      vacante: null as VacanteDTO | null,
-      loading: true,
-      error: null as string | null
+      vacante,
+      loading,
+      error,
+      downloadCV,
+      contactApplicant,
+      formatDate,
+      formatCurrency,
     };
   },
-
-  methods: {
-    formatDate(dateString: string | Date | undefined): string {
-      if (!dateString) return 'Fecha no especificada';
-      const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    },
-
-    // Cambiar el método descargarCV
-    async descargarCV(idVacante: number | undefined, idUsuario: number | undefined) {
-      if (!idVacante || !idUsuario) {
-        this.error = 'Datos de CV inválidos'
-        return
-      }
-
-      try {
-        const blob = await EmpresarialService.downloadApplicantCV(idVacante, idUsuario)
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', `CV-Postulante-${idUsuario}-Vacante-${idVacante}.pdf`)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(url)
-      } catch (error) {
-        this.error = 'Error al descargar el CV. Inténtalo nuevamente.'
-        console.error('Error al descargar CV:', error)
-      }
-    },
-
-    contactarPostulante(idUsuario: number | undefined) {
-      if (!idUsuario) return;
-      console.log(`Contactando al usuario ${idUsuario}`);
-    }
-  },
-
-  async created() {
-    try {
-      const id = Number(this.$route.params.id)
-      if (isNaN(id)) throw new Error('ID de vacante inválido')
-
-      this.vacante = await EmpresarialService.getVacanteById(id)
-      if (!this.vacante) throw new Error('Vacante no encontrada')
-    } catch (error) {
-      this.error = error instanceof Error ? error.message : 'Error al cargar la vacante'
-      console.error('Error:', error)
-    } finally {
-      this.loading = false
-    }
-  }
-});
+};
 </script>
