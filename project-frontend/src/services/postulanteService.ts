@@ -7,10 +7,10 @@ export const PostulanteService = {
   async uploadCV(file: File, idVacante: number): Promise<CVResponse> {
     const formData = new FormData()
     formData.append('file', file)
-    
+
     try {
       const { data } = await apiClient.post<CVResponse>(
-        `/api/CVs/upload/${idVacante}`, 
+        `/api/CVs/upload/${idVacante}`,
         formData,
         {
           headers: {
@@ -40,16 +40,17 @@ export const PostulanteService = {
     }
   },
 
+  // postulanteService.ts
   async downloadMyCV(idVacante: number): Promise<Blob> {
     try {
-      const response = await apiClient.get(`/api/CVs/my-cv/${idVacante}/download`, {
+      const response = await apiClient.get(`/api/CVs/download/${idVacante}`, {
         responseType: 'blob'
-      })
-      return response.data
+      });
+      return response.data;
     } catch (error) {
-      const axiosError = error as AxiosError
-      console.error('Error al descargar el CV:', axiosError.response?.data)
-      throw axiosError
+      const axiosError = error as AxiosError;
+      console.error('Error al descargar el CV:', axiosError.response?.data);
+      throw axiosError;
     }
   }
 }
