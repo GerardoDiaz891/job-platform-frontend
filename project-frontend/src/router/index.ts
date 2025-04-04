@@ -1,42 +1,55 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
-import NotFound from '../components/NotFound.vue'
+
+import DashboardUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 import Vacante from '@/components/VacanteCard.vue'
 import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
+import VacantesEmpresarial from '@/views/Empresas/VacantesEmpresarial.vue'
+import NotFound from '../components/NotFound.vue'
 
 const routes = [
-  // RUTAS PÚBLICAS
+  // Rutas Públicas
   {
     path: '/login',
-    name: 'login',
-    component: () => import('../views/LoginView.vue'),
+    name: 'Login',
+    component: LoginView,
     meta: { isPublic: true }
   },
   {
     path: '/register',
-    name: 'register',
-    component: () => import('../views/RegisterView.vue'),
+    name: 'Register',
+    component: RegisterView,
     meta: { isPublic: true }
   },
 
-  // RUTAS PROTEGIDAS GENERALES
+  // Rutas Generales Protegidas
   {
     path: '/',
-    component: DadshbaordUsuario,
+    name: 'Home',
+    component: DashboardUsuario,
     meta: { requiresAuth: true }
-  },
-  {
-    path: '/perfil-usuario',
-    name: 'PerfilUsuario',
-    component: () => import('../views/PerfilUsuario.vue'),
-    meta: { requiresAuth: true, allowedRoles: ['Postulante'] }
   },
   {
     path: '/nosotros',
-    name: 'about',
+    name: 'About',
     component: () => import('../views/AboutView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/vacante/:id',
+    name: 'VacanteDetail',
+    component: Vacante,
+    meta: { requiresAuth: true, title: 'Detalle Vacante - EmpleoLink' }
+  },
+
+  // Rutas para Postulantes
+  {
+    path: '/perfil-usuario',
+    name: 'UserProfile',
+    component: () => import('../views/PerfilUsuario.vue'),
+    meta: { requiresAuth: true, allowedRoles: ['Postulante'] }
   },
   {
     path: '/uploadcv',
@@ -50,64 +63,63 @@ const routes = [
     component: () => import('../views/PostulationView.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Postulante'] }
   },
-  {
-    path: '/vacante/:id',
-    name: 'Vacante',
-    component: Vacante,
-    meta: { requiresAuth: true, title: 'Detalle Vacante - EmpleoLink' }
-  },
 
-  // RUTAS DE USUARIO EMPRESARIAL
+  // Rutas para Empresariales
   {
     path: '/perfilempresa',
+    name: 'CompanyProfile',
     component: PerfilEmpresaVue,
     meta: { requiresAuth: true, allowedRoles: ['Empresarial'] }
   },
   {
     path: '/empresarial/vacantes',
-    component: () => import('@/views/Empresas/VacantesEmpresarial.vue'),
+    name: 'CompanyVacancies',
+    component: VacantesEmpresarial,
     meta: { requiresAuth: true, allowedRoles: ['Empresarial'] }
   },
   {
     path: '/empresarial/vacante/:id',
+    name: 'CompanyVacancyDetail',
     component: () => import('@/views/Empresas/DetalleVacante.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Empresarial'] }
   },
   {
     path: '/empresarial/crear-vacante',
+    name: 'CreateVacancy',
     component: () => import('@/views/Empresas/CrearVacante.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Empresarial'] }
   },
 
-  // RUTAS DE ADMINISTRAODR
+  // Rutas para Administradores
   {
     path: '/admin/dashboard',
-    name: 'Dashboard',
+    name: 'AdminDashboard',
     component: () => import('@/views/admin/DashboardView.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Administrador'] }
   },
   {
     path: '/admin/usuarios',
-    name: 'Usuarios',
+    name: 'AdminUsers',
     component: () => import('@/views/admin/UsuariosView.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Administrador'] }
   },
   {
     path: '/admin/create-user',
-    name: 'CreateUser',
+    name: 'AdminCreateUser',
     component: () => import('@/views/admin/CreateUserView.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Administrador'] }
   },
   {
     path: '/admin/roles',
-    name: 'Roles',
+    name: 'AdminRoles',
     component: () => import('@/views/admin/RolesView.vue'),
     meta: { requiresAuth: true, allowedRoles: ['Administrador'] }
   },
 
-  // RUTA 404
+  // Ruta 404
   {
     path: '/:catchAll(.*)',
+    name: 'NotFound',
     component: NotFound,
     meta: { title: 'Página no encontrada' }
   }
@@ -118,26 +130,19 @@ const router = createRouter({
   routes
 })
 
-// GUARDIA DE NAVEGACIÓ GLOBAL
+// Guardia de navegación global
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated
   const userRole = authStore.userRole
 
-  // RUTAS PÚBLICAS
-  if (to.meta.isPublic) {
-    return next()
-  }
+  // Depuración (puedes quitarlo después de verificar)
+  console.log(`Navegando a: ${to.path} | Autenticado: ${isAuthenticated} | Rol: ${userRole}`)
 
-  // REDIRIGIR AL LOGIN SI NECESITA AUTENTICACIÓN
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    return next('/login')
-  }
+  if (to.meta.isPublic) return next()
+  if (to.meta.requiresAuth && !isAuthenticated) return next('/login')
+  if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(userRole)) return next('/')
 
-  // VERIFICAR QUE EL USUARIO TENGA ROLES PERMITIDOS
-  if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(userRole)) {
-    return next('/')
-  }
   next()
 })
 
