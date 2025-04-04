@@ -65,10 +65,6 @@
         </template>
 
         <template v-else>
-          <router-link v-if="userRole === 'Postulante'" to="/perfil-usuario" class="nav-link">
-            Mi Perfil
-          </router-link>
-
           <button @click="logout"
             class="bg-red-500 text-white px-5 py-2 rounded-md shadow-lg hover:bg-red-600 transition">
             Cerrar Sesión
@@ -106,7 +102,7 @@ export default {
     },
     async logout() {
       try {
-        await AuthService.logout(); // LLAMAR AL MÉTODO QUE INVALIDA AL TOKEN
+        await AuthService.logout(); // Llamar al método que invalida el token
         this.isLoggedIn = false;
         this.userRole = '';
         window.dispatchEvent(new Event('auth-change'));
@@ -114,22 +110,10 @@ export default {
         if (this.$route.path !== '/login') {
           this.$router.push('/login');
         }
-
-        this.$notify({
-          title: 'Sesión cerrada',
-          text: 'Has cerrado sesión correctamente',
-          type: 'success',
-        });
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
-        this.$notify({
-          title: 'Error',
-          text: 'Ocurrió un problema al cerrar sesión',
-          type: 'error',
-        });
       }
     },
   },
 };
 </script>
-
