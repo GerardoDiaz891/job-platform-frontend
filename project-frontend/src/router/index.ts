@@ -10,6 +10,15 @@ const router = createRouter({
     {
       path: '/',
       component: DadshbaordUsuario,
+      beforeEnter: (to, from, next) => {
+        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
+        if (!isAuthenticated) {
+          next('/login'); // Redirige si no está autenticado
+        } else {
+          next(); // Continúa si está autenticado
+        }
+      }
+
     },
     {
       path: '/PerfilEmpresa',

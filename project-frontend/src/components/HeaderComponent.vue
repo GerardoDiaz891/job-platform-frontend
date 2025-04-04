@@ -39,17 +39,18 @@
 
       <!-- Menú de navegación -->
       <div
-        :class="[
-          'md:flex md:items-center md:space-x-2',
-          'absolute md:static top-16 left-0 w-full md:w-auto',
-          'bg-gradient-to-b from-blue-600 to-blue-700 md:bg-transparent px-4 md:px-0',
-          'transition-all duration-300 ease-in-out overflow-hidden',
-          'shadow-lg md:shadow-none',
-          isMenuOpen
-            ? 'max-h-screen py-4 opacity-100'
-            : 'max-h-0 opacity-0 md:max-h-full md:opacity-100',
-        ]"
-      >
+  :class="[
+    'md:flex md:items-center md:space-x-10',
+    'absolute md:static top-16 left-0 w-full md:w-auto',
+    'md:bg-transparent px-6 md:px-2',
+    'transition-all duration-300 ease-out overflow-hidden',
+    'shadow-md md:shadow-none rounded-lg',
+    isMenuOpen
+      ? 'max-h-screen py-8 opacity-100'
+      : 'max-h-0 opacity-0 md:max-h-full md:opacity-100',
+  ]"
+>
+
         <!-- Enlaces comunes -->
         <router-link to="/" class="nav-link"> Vacantes </router-link>
 
@@ -71,17 +72,30 @@
 
         <!-- Enlaces de autenticación -->
         <template v-if="!isLoggedIn">
-          <router-link to="/login" class="nav-link"> Iniciar Sesión </router-link>
+  <div class="flex items-center space-x-4">
+    <router-link to="/login" class="nav-link text-blue-100 border border-blue-400 px-4 py-2 rounded-md hover:text-white hover:bg-blue-400 transition">
+      Iniciar Sesión
+    </router-link>
 
-          <router-link to="/register" class="btn-primary"> Regístrate </router-link>
-        </template>
+    <router-link to="/register" class="btn-primary bg-blue-500 text-white px-5 py-2 rounded-md shadow-lg hover:bg-blue-600 transition">
+      Regístrate
+    </router-link>
+  </div>
+</template>
+
 
         <template v-else>
 <router-link v-if="userRole === 'Postulante'" to="/perfil-usuario" class="nav-link">
-   Mi Perfil 
+   Mi Perfil
   </router-link>
 
-          <button @click="logout" class="btn-danger">Cerrar Sesión</button>
+  <button
+  @click="logout"
+  class="bg-red-500 text-white px-5 py-2 rounded-md shadow-lg hover:bg-red-600 transition"
+>
+  Cerrar Sesión
+</button>
+
         </template>
       </div>
     </nav>
