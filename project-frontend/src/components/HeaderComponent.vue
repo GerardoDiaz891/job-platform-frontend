@@ -4,8 +4,7 @@
       <!-- Logo y Nombre -->
       <div class="flex items-center space-x-2">
         <router-link to="/" class="flex items-center">
-          <img class="w-10 h-10 transition-transform duration-300 hover:scale-110" src="@/assets/trans.png"
-            alt="Logo" />
+          <img class="w-10 h-10 transition-transform duration-300 hover:scale-110" src="@/assets/trans.png" alt="Logo" />
           <span class="ml-2 text-xl font-bold hidden sm:block">EmpleoLink</span>
         </router-link>
       </div>
@@ -32,7 +31,6 @@
           ? 'max-h-screen py-8 opacity-100'
           : 'max-h-0 opacity-0 md:max-h-full md:opacity-100',
       ]">
-
         <!-- Enlaces comunes -->
         <router-link to="/" class="nav-link"> Home </router-link>
 
@@ -41,7 +39,7 @@
           Mis Vacantes
         </router-link>
 
-        <!-- Mostrar solo para usuarios empresariales -->
+        <!-- Mostrar solo para usuarios administradores -->
         <router-link v-if="userRole === 'Administrador'" to="/admin/roles" class="nav-link">
           Admin Panel
         </router-link>
@@ -59,14 +57,12 @@
               class="nav-link text-blue-100 border border-blue-400 px-4 py-2 rounded-md hover:text-white hover:bg-blue-400 transition">
               Iniciar Sesión
             </router-link>
-
             <router-link to="/register"
               class="btn-primary bg-blue-500 text-white px-5 py-2 rounded-md shadow-lg hover:bg-blue-600 transition">
               Regístrate
             </router-link>
           </div>
         </template>
-
 
         <template v-else>
           <router-link v-if="userRole === 'Postulante'" to="/perfil-usuario" class="nav-link">
@@ -77,7 +73,6 @@
             class="bg-red-500 text-white px-5 py-2 rounded-md shadow-lg hover:bg-red-600 transition">
             Cerrar Sesión
           </button>
-
         </template>
       </div>
     </nav>
@@ -85,6 +80,8 @@
 </template>
 
 <script>
+import { AuthService } from '@/services/authService';
+
 export default {
   name: 'AppHeader',
   data() {
@@ -92,47 +89,47 @@ export default {
       isMenuOpen: false,
       isLoggedIn: false,
       userRole: '',
-    }
+    };
   },
   created() {
-    this.checkAuthStatus()
-    window.addEventListener('auth-change', this.checkAuthStatus)
+    this.checkAuthStatus();
+    window.addEventListener('auth-change', this.checkAuthStatus);
   },
   beforeDestroy() {
-    window.removeEventListener('auth-change', this.checkAuthStatus)
+    window.removeEventListener('auth-change', this.checkAuthStatus);
   },
   methods: {
     checkAuthStatus() {
-      this.isLoggedIn = !!localStorage.getItem('token')
-      const userData = JSON.parse(localStorage.getItem('userData') || '{}')
-      this.userRole = userData.rol || ''
+      this.isLoggedIn = !!localStorage.getItem('token');
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      this.userRole = userData.rol || '';
     },
     async logout() {
       try {
-        localStorage.removeItem('token')
-        localStorage.removeItem('userData')
-        this.isLoggedIn = false
-        this.userRole = ''
-        window.dispatchEvent(new Event('auth-change'))
+        await AuthService.logout(); // LLAMAR AL MÉTODO QUE INVALIDA AL TOKEN
+        this.isLoggedIn = false;
+        this.userRole = '';
+        window.dispatchEvent(new Event('auth-change'));
 
         if (this.$route.path !== '/login') {
-          this.$router.push('/login')
+          this.$router.push('/login');
         }
 
         this.$notify({
           title: 'Sesión cerrada',
           text: 'Has cerrado sesión correctamente',
           type: 'success',
-        })
+        });
       } catch (error) {
-        console.error('Error al cerrar sesión:', error)
+        console.error('Error al cerrar sesión:', error);
         this.$notify({
           title: 'Error',
           text: 'Ocurrió un problema al cerrar sesión',
           type: 'error',
-        })
+        });
       }
     },
   },
-}
+};
 </script>
+

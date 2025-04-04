@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 p-4">
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl">
-      <!-- Encabezado con logo y título -->
       <div class="flex flex-col items-center mb-8">
         <img :src="LogoGW" alt="Logo" class="w-20 h-20 mb-4">
         <h1 class="text-3xl font-bold text-gray-800">Crea tu cuenta</h1>
@@ -9,7 +8,6 @@
       </div>
 
       <form @submit.prevent="register" class="space-y-4">
-        <!-- Sección común a todos los roles -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Nombre -->
           <div>
@@ -21,9 +19,9 @@
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <input v-model="name" type="text"
+              <input v-model="name" type="text" maxlength="50" pattern="[A-Za-z\s]+"
                 class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="Juan Pérez" required />
+                placeholder="Juan Pérez" required @input="sanitizeInput('name')" />
             </div>
           </div>
 
@@ -37,9 +35,9 @@
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
               </div>
-              <input v-model="email" type="email"
+              <input v-model="email" type="email" maxlength="100"
                 class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="tu@correo.com" required />
+                placeholder="tu@correo.com" required @input="sanitizeInput('email')" />
             </div>
           </div>
 
@@ -53,9 +51,9 @@
                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <input v-model="password" type="password"
+              <input v-model="password" type="password" maxlength="50"
                 class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="••••••••" required />
+                placeholder="••••••••" required @input="sanitizeInput('password')" />
             </div>
             <p class="mt-1 text-xs text-gray-500">Mínimo 8 caracteres, 1 mayúscula y 1 número</p>
           </div>
@@ -69,9 +67,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <input v-model="confirmPassword" type="password"
+              <input v-model="confirmPassword" type="password" maxlength="50"
                 class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="••••••••" required />
+                placeholder="••••••••" required @input="sanitizeInput('confirmPassword')" />
             </div>
           </div>
 
@@ -90,17 +88,13 @@
         <!-- Campos adicionales para Empresas -->
         <div v-if="selectedRole === '2'" class="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
           <h3 class="text-lg font-semibold text-blue-800 mb-4">Información de la empresa</h3>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Nombre Empresa -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la empresa</label>
-              <input v-model="nombreEmpresa" type="text"
+              <input v-model="nombreEmpresa" type="text" maxlength="100"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="Mi Empresa S.A." required />
+                placeholder="Mi Empresa S.A." required @input="sanitizeInput('nombreEmpresa')" />
             </div>
-
-            <!-- Tipo Empresa -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de empresa</label>
               <select v-model="tipoEmpresa"
@@ -114,24 +108,18 @@
                 <option value="Otro">Otro</option>
               </select>
             </div>
-
-            <!-- Dirección -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-              <input v-model="direccion" type="text"
+              <input v-model="direccion" type="text" maxlength="150"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="Av. Principal 123" required />
+                placeholder="Av. Principal 123" required @input="sanitizeInput('direccion')" />
             </div>
-
-            <!-- Teléfono -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-              <input v-model="telefono" type="tel"
+              <input v-model="telefono" type="tel" maxlength="15" pattern="[\+]?[0-9\s\-]+"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder="+51 987654321" required />
+                placeholder="+51 987654321" required @input="sanitizeInput('telefono')" />
             </div>
-
-            <!-- Sitio Web -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Sitio web</label>
               <div class="relative">
@@ -142,23 +130,21 @@
                       clip-rule="evenodd" />
                   </svg>
                 </div>
-                <input v-model="sitioWeb" type="url"
+                <input v-model="sitioWeb" type="url" maxlength="100"
                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                  placeholder="https://www.miempresa.com" required />
+                  placeholder="https://www.miempresa.com" required @input="sanitizeInput('sitioWeb')" />
               </div>
             </div>
           </div>
-
-          <!-- Descripción -->
           <div class="mt-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Descripción de la empresa</label>
-            <textarea v-model="descripcionEmpresa"
+            <textarea v-model="descripcionEmpresa" maxlength="500"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              rows="3" placeholder="Breve descripción de las actividades de la empresa..." required></textarea>
+              rows="3" placeholder="Breve descripción de las actividades de la empresa..." required
+              @input="sanitizeInput('descripcionEmpresa')"></textarea>
           </div>
         </div>
 
-        <!-- Botón de registro -->
         <div class="pt-4">
           <button type="submit"
             class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
@@ -175,7 +161,6 @@
         </div>
       </form>
 
-      <!-- Enlace a login -->
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-600">
           ¿Ya tienes una cuenta?
@@ -197,7 +182,7 @@ const name = ref("")
 const email = ref("")
 const password = ref("")
 const confirmPassword = ref("")
-const selectedRole = ref("3") // Valor por defecto: Postulante
+const selectedRole = ref("3")
 const nombreEmpresa = ref("")
 const tipoEmpresa = ref("")
 const direccion = ref("")
@@ -208,29 +193,77 @@ const loading = ref(false)
 const submitted = ref(false)
 const router = useRouter()
 
-const register = async () => {
-  submitted.value = true
+// SANITIZACIÓN DE ENTRADAS Y PREVENCIÓN DE XSS
+const sanitizeInput = (field) => {
+  const value = eval(field).value // EVAL PARA ACCEDER DINAMICAMENTE AL REF
+  const sanitized = value
+    .replace(/[<>&"']/g, "") // NADA DE CARACTERES ESPECIALES
+    .replace(/\s+/g, " ")    // NORMALIZACIÓN DE ESPACIÓN
+    .trim()
+  eval(field).value = sanitized
+}
 
-  const nameRegex = /^[a-zA-Z\s]+$/
+// VALIDACIONES
+const validateInputs = () => {
+  const nameRegex = /^[a-zA-Z\s]{2,50}$/
   if (!nameRegex.test(name.value)) {
-    alert("El nombre solo puede contener letras y espacios.")
-    return
+    alert("El nombre debe contener solo letras y espacios, entre 2 y 50 caracteres.")
+    return false
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   if (!emailRegex.test(email.value)) {
     alert("Por favor, ingresa un correo electrónico válido.")
-    return
+    return false
   }
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,50}$/
   if (!passwordRegex.test(password.value)) {
-    alert("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.")
-    return
+    alert("La contraseña debe tener entre 8 y 50 caracteres, con al menos una mayúscula, una minúscula y un número.")
+    return false
   }
 
   if (password.value !== confirmPassword.value) {
     alert("Las contraseñas no coinciden.")
+    return false
+  }
+
+  if (selectedRole.value === "2") {
+    if (!nombreEmpresa.value || nombreEmpresa.value.length > 100) {
+      alert("El nombre de la empresa es obligatorio y no debe exceder 100 caracteres.")
+      return false
+    }
+    if (!tipoEmpresa.value) {
+      alert("Selecciona un tipo de empresa.")
+      return false
+    }
+    if (!direccion.value || direccion.value.length > 150) {
+      alert("La dirección es obligatoria y no debe exceder 150 caracteres.")
+      return false
+    }
+    const phoneRegex = /^\+?[0-9\s-]{8,15}$/
+    if (!phoneRegex.test(telefono.value)) {
+      alert("El teléfono debe tener entre 8 y 15 caracteres, solo números, espacios o guiones.")
+      return false
+    }
+    const urlRegex = /^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/
+    if (!urlRegex.test(sitioWeb.value)) {
+      alert("Ingresa un sitio web válido (ej. https://www.miempresa.com).")
+      return false
+    }
+    if (!descripcionEmpresa.value || descripcionEmpresa.value.length > 500) {
+      alert("La descripción es obligatoria y no debe exceder 500 caracteres.")
+      return false
+    }
+  }
+
+  return true
+}
+
+const register = async () => {
+  submitted.value = true
+
+  if (!validateInputs()) {
     return
   }
 
@@ -253,7 +286,7 @@ const register = async () => {
       idCV: 0,
     }
 
-    const response = await AuthService.register(userData) // Cambia aquí
+    const response = await AuthService.register(userData)
     alert("Usuario registrado exitosamente.")
     router.push("/login")
   } catch (error) {
