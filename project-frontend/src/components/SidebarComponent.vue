@@ -5,13 +5,6 @@
     </div>
     
     <nav class="mt-6">
-      <router-link 
-        to="/admin/dashboard"
-        class="block py-2 px-4 rounded hover:bg-gray-700 transition mb-2"
-        active-class="bg-blue-600"
-      >
-        🏠 Dashboard
-      </router-link>
       
       <router-link 
         to="/admin/usuarios"

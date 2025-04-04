@@ -170,7 +170,7 @@ export default {
         successMessage.value = '¡Tu CV se ha enviado correctamente!'
         hasApplied.value = true
       } catch (err) {
-        error.value = err.response?.data || 'Error al enviar el CV. Por favor, inténtalo nuevamente.'
+        error.value = err.response?.data || 'Error al enviar el CV. Por favor, inicia sesión.'
       } finally {
         isLoading.value = false
       }
