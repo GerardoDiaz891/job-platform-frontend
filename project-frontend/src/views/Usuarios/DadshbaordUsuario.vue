@@ -15,7 +15,6 @@ import FooterComponent from '@/components/FooterComponent.vue';
 </template>
 
 <style>
-/* Opcional: Estilos globales para el layout */
 .container {
   max-width: 1280px;
 }

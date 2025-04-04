@@ -151,8 +151,8 @@
   </main>
   <FooterComponent />
 </template>
-
 <script setup>
+
 import { ref } from 'vue'
 import FooterComponent from '@/components/FooterComponent.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'

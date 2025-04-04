@@ -1,5 +1,23 @@
 <template>
   <div class="flex flex-col min-h-screen bg-gray-100">
+    <!-- Notificación de éxito -->
+    <div v-if="showSuccess" class="fixed top-4 right-4 z-50">
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg flex items-center">
+        <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Éxito</p>
+          <p>Los cambios se guardaron correctamente.</p>
+        </div>
+        <button @click="showSuccess = false" class="ml-4 text-green-700 hover:text-green-900">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <HeaderComponent />
 
     <div class="flex-1 p-6">
@@ -161,6 +179,7 @@ export default {
         linkedin: '',
         github: '',
       },
+      showSuccess: false
     }
   },
   async mounted() {
@@ -211,6 +230,11 @@ export default {
     guardarPerfil() {
       console.log('Perfil guardado:', this.usuario)
       this.guardarEnLocalStorage()
+      this.showSuccess = true
+      setTimeout(() => {
+        this.showSuccess = false
+        window.location.reload() // Recarga la página después de mostrar la notificación
+      }, 2000)
     },
   },
 }

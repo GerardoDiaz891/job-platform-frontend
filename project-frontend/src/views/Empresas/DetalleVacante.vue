@@ -1,4 +1,5 @@
 <template>
+  <HeaderComponent />
   <div class="min-h-screen bg-gray-50">
     <div class="container mx-auto px-4 py-8">
       <router-link 
@@ -179,15 +180,22 @@
       </div>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getVacanteById, downloadCV } from '@/services/api';
 import type { VacanteDTO, CVDTO } from '@/stores/VacantesDTO';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+import FooterComponent from '@/components/FooterComponent.vue';
 
 export default defineComponent({
   name: 'DetalleVacante',
+  components: {
+    HeaderComponent,
+    FooterComponent
+  },
   
   data() {
     return {

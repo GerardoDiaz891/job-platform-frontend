@@ -1,5 +1,41 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 p-4">
+    <!-- Notificación de éxito -->
+    <div v-if="showSuccess" class="fixed top-4 right-4 z-50">
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg flex items-center">
+        <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Éxito</p>
+          <p>Inicio de sesión exitoso.</p>
+        </div>
+        <button @click="showSuccess = false" class="ml-4 text-green-700 hover:text-green-900">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notificación de error -->
+    <div v-if="showError" class="fixed top-4 right-4 z-50">
+      <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-lg flex items-center">
+        <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Error</p>
+          <p>{{ errorMessage }}</p>
+        </div>
+        <button @click="showError = false" class="ml-4 text-red-700 hover:text-red-900">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
       <!-- Encabezado con logo y título -->
       <div class="flex flex-col items-center mb-8">
@@ -106,21 +142,26 @@ const password = ref('')
 const loading = ref(false)
 const submitted = ref(false)
 const router = useRouter()
+const showSuccess = ref(false)
+const showError = ref(false)
+const errorMessage = ref('')
 
 const login = async () => {
   submitted.value = true
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email.value)) {
-    alert('Por favor, ingresa un correo electrónico válido.')
+    showError.value = true
+    errorMessage.value = 'Por favor, ingresa un correo electrónico válido.'
+    setTimeout(() => showError.value = false, 5000)
     return
   }
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
   if (!passwordRegex.test(password.value)) {
-    alert(
-      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.',
-    )
+    showError.value = true
+    errorMessage.value = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.'
+    setTimeout(() => showError.value = false, 5000)
     return
   }
 
@@ -133,22 +174,25 @@ const login = async () => {
     }
 
     const response = await loginUser(credentials)
-localStorage.setItem('token', response.token)
-console.log('token', response)
-alert('Inicio de sesión exitoso.')
-if (response.role === 1) {
+    localStorage.setItem('token', response.token)
+    console.log('token', response)
+    showSuccess.value = true
+    setTimeout(() => showSuccess.value = false, 3000)
+    
+    if (response.role === 1) {
       router.push('/admin/dashboard')
     } else {
       router.push('/')
     }
-} catch (error) {
-  console.error('Error al iniciar sesión:', error)
-  alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.')
-} finally {
-  loading.value = false
-}
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error)
+    showError.value = true
+    errorMessage.value = 'Error al iniciar sesión. Por favor, inténtalo de nuevo.'
+    setTimeout(() => showError.value = false, 5000)
+  } finally {
+    loading.value = false
+  }
 };
-
 </script>
 
 <style scoped>
