@@ -19,6 +19,7 @@ apiClient.interceptors.request.use((config) => {
   return config
 })
 
+// MODULO DE LOGIN Y REGISTRO
 export const registerUser = async (userData: RegisterUserData) => {
   try {
     const { data } = await apiClient.post('/api/Auth/register', userData)
@@ -51,6 +52,7 @@ export const loginUser = async (credentials: LoginCredentials) => {
   }
 };
 
+// MODULO DE PERFILES DE USUARIO
 export const perfilUSer = async () => {
   const { data } = await apiClient.get('/api/Usuarios/mi-informacion')
   // localStorage.setItem('token', data.token)

@@ -10,60 +10,25 @@ const router = createRouter({
     {
       path: '/',
       component: DadshbaordUsuario,
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/PerfilEmpresa',
       component: PerfilEmpresaVue,
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/Nosotros',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
-    
     {
       path: '/perfil-usuario',
       name: 'PerfilUsuario',
       component: () => import('../views/PerfilUsuario.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
-    
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
-    
     },
     {
       path: '/Register',
@@ -74,40 +39,17 @@ const router = createRouter({
       path: '/UploadCV',
       name: 'UploadCV',
       component: () => import('../views/UploadCVView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/Postulation',
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
+    // RUTAS DE ADMIN
     {
       path: '/admin/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
-    beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/vacante/:id',
@@ -119,78 +61,30 @@ const router = createRouter({
       path: "/admin/usuarios",
       name: "Usuarios",
       component: () => import("@/views/admin/UsuariosView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: "/admin/create-user",
       name: "CreateUser",
       component: () => import("@/views/admin/CreateUserView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: "/admin/roles",
       name: "Roles",
       component: () => import("@/views/admin/RolesView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     //RUTAS DE USUARIO EMPRESARIAL
     {
       path: '/empresarial/vacantes',
       component: () => import('@/views/Empresas/VacantesEmpresarial.vue'),
 
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/empresarial/vacante/:id',
       component: () => import('@/views/Empresas/DetalleVacante.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     {
       path: '/empresarial/crear-vacante',
       component: () => import('@/views/Empresas/CrearVacante.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
     },
     // Ruta 404
     {
