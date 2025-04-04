@@ -1,6 +1,26 @@
 <template>
   <HeaderComponent />
   <main class="min-h-screen bg-gray-50 py-8">
+    <!-- Mensaje de confirmación -->
+    <div v-if="showSuccessMessage" class="fixed top-4 right-4 z-50">
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg max-w-sm">
+        <div class="flex items-center">
+          <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <div>
+            <p class="font-bold">¡Éxito!</p>
+            <p>Perfil actualizado correctamente</p>
+          </div>
+          <button @click="showSuccessMessage = false" class="ml-auto text-green-700 hover:text-green-900">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-4xl mx-auto px-4">
       <!-- Encabezado -->
       <div class="text-center mb-10">
@@ -145,13 +165,14 @@ const email = ref('')
 const name = ref('')
 const phone = ref('')
 const loading = ref(false)
-let currentProfile = null // Almanecenamiento del perfil actual
+const showSuccessMessage = ref(false)
+let currentProfile = null
 
 // Datos iniciales
 async function loadProfile() {
   try {
     const dataInfo = await AuthService.getProfile()
-    currentProfile = dataInfo // GUARDAR PERFIL COMPLETO
+    currentProfile = dataInfo
     description.value = dataInfo.descripcionEmpresa || ''
     location.value = dataInfo.direccion || ''
     name.value = dataInfo.nombre || ''
@@ -167,7 +188,7 @@ async function saveProfile() {
   try {
     const updateData = {
       nombre: name.value,
-      contraseña: currentProfile?.contraseña || "",  // Mandar la contraseña actual
+      contraseña: currentProfile?.contraseña || "",
       nombreEmpresa: currentProfile?.nombreEmpresa || '',
       tipoEmpresa: currentProfile?.tipoEmpresa || '',
       direccion: location.value,
@@ -176,10 +197,14 @@ async function saveProfile() {
       descripcionEmpresa: description.value
     }
 
-    //console.log('Datos enviados:', updateData)
-    const response = await AuthService.updateProfile(updateData)
-    console.log('Perfil actualizado:', response)
-    //alert('Perfil actualizado exitosamente')
+    await AuthService.updateProfile(updateData)
+    
+    // MENSAJE DE EXITO QUE SE OCLTA AL CABO DE 5 SEG
+    showSuccessMessage.value = true
+    setTimeout(() => {
+      showSuccessMessage.value = false
+    }, 5000)
+    
   } catch (error) {
     console.error('Error al actualizar el perfil:', error)
     alert('Error al actualizar el perfil: ' + (error.response?.data?.title || error.message))

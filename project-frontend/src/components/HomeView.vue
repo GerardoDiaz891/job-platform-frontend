@@ -2,7 +2,7 @@
   <div class="px-4 py-8 sm:px-6 lg:px-8">
     <!-- Encabezado y buscador -->
     <div class="text-center mb-10">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">Vacantes Disponibles</h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido!!</h1>
       <p class="text-lg text-gray-600 max-w-2xl mx-auto">
         Encuentra la oportunidad laboral que estás buscando
       </p>

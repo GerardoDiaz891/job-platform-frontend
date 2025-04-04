@@ -195,11 +195,11 @@ const router = useRouter()
 
 // SANITIZACIÓN DE ENTRADAS Y PREVENCIÓN DE XSS
 const sanitizeInput = (field) => {
-  const value = eval(field).value // EVAL PARA ACCEDER DINAMICAMENTE AL REF
+  const value = eval(field).value
+  // SOLO SE PERMITEN LETRAS, ESPACIOS, ACENTOS Y APÓSTROFES
   const sanitized = value
-    .replace(/[<>&"']/g, "") // NADA DE CARACTERES ESPECIALES
-    .replace(/\s+/g, " ")    // NORMALIZACIÓN DE ESPACIÓN
-    .trim()
+    .replace(/[<>&"]/g, "") // ELIMINACIÓN DE CARACTERRES PELIGROSOS
+    .replace(/\s{2,}/g, ' ') // MULTIPLES ESPACIOS POR UNO
   eval(field).value = sanitized
 }
 
@@ -287,7 +287,7 @@ const register = async () => {
     }
 
     const response = await AuthService.register(userData)
-    alert("Usuario registrado exitosamente.")
+    // alert("Usuario registrado exitosamente.")
     router.push("/login")
   } catch (error) {
     if (error.response && error.response.data) {
