@@ -3,6 +3,7 @@ import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import NotFound from '../components/NotFound.vue'
 import Vacante from '@/components/Vacante.vue'
 import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
+import { authGuard } from './authGuard'; // importa la función
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,55 +11,28 @@ const router = createRouter({
     {
       path: '/',
       component: DadshbaordUsuario,
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
 
     },
     {
       path: '/PerfilEmpresa',
       component: PerfilEmpresaVue,
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/Nosotros',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
 
     {
       path: '/perfil-usuario',
       name: 'PerfilUsuario',
       component: () => import('../views/PerfilUsuario.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
+
 
     {
       path: '/login',
@@ -75,40 +49,19 @@ const router = createRouter({
       path: '/UploadCV',
       name: 'UploadCV',
       component: () => import('../views/UploadCVView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/Postulation',
       name: 'Postulation',
       component: () => import('../views/PostulationView.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/admin/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
-    beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/vacante/:id',
@@ -120,78 +73,35 @@ const router = createRouter({
       path: "/admin/usuarios",
       name: "Usuarios",
       component: () => import("@/views/admin/UsuariosView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: "/admin/create-user",
       name: "CreateUser",
       component: () => import("@/views/admin/CreateUserView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: "/admin/roles",
       name: "Roles",
       component: () => import("@/views/admin/RolesView.vue"),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     //RUTAS DE USUARIO EMPRESARIAL
     {
       path: '/empresarial/vacantes',
       component: () => import('@/views/Empresas/VacantesEmpresarial.vue'),
-
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/empresarial/vacante/:id',
       component: () => import('@/views/Empresas/DetalleVacante.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     {
       path: '/empresarial/crear-vacante',
       component: () => import('@/views/Empresas/CrearVacante.vue'),
-      beforeEnter: (to, from, next) => {
-        const isAuthenticated = localStorage.getItem('token'); // O usa Vuex o Pinia
-        if (!isAuthenticated) {
-          next('/login'); // Redirige si no está autenticado
-        } else {
-          next(); // Continúa si está autenticado
-        }
-      }
+      beforeEnter: authGuard,
     },
     // Ruta 404
     {
@@ -201,5 +111,6 @@ const router = createRouter({
     }
   ]
 })
+
 
 export default router

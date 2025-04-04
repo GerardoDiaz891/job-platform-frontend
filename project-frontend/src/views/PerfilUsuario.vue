@@ -234,7 +234,7 @@ export default {
       setTimeout(() => {
         this.showSuccess = false
         window.location.reload() // Recarga la página después de mostrar la notificación
-      }, 2000)
+      }, 500)
     },
   },
 }

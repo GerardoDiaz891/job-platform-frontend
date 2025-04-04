@@ -154,3 +154,23 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Estilo para enlaces de navegación activos (excepto el logo) */
+.router-link-exact-active:not(.flex) {
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 0.375rem;
+  position: relative;
+}
+
+.router-link-exact-active:not(.flex)::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: white;
+}
+</style>
