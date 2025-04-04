@@ -1,16 +1,16 @@
 export interface VacanteDTO {
-    id?: number; // Opcional porque al crear no tendrá ID
+    id?: number;
     nombre: string;
     descripcion: string;
     salario: number;
     horario: string;
-    fechaPublicacion?: string | Date; // Opcional porque el backend la genera
+    fechaPublicacion?: string | Date;
     fechaExpiracion: string | Date;
     habilidadesRequeridas: string;
     ubicacion: string;
     tipoTrabajo: string;
-    usuarioId?: number; // Opcional porque el backend lo asigna
-    cVs?: CVDTO[]; // Opcional para la creación
+    usuarioId?: number; 
+    cVs?: CVDTO[]; 
   }
   
   export interface CVDTO {
