@@ -33,13 +33,11 @@
 
     <!-- Grid de vacantes -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <!-- Tarjeta de vacante -->
       <div
         v-for="vacante in filteredVacantes"
         :key="vacante.id"
         class="bg-white overflow-hidden shadow-lg rounded-xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100"
       >
-        <!-- Encabezado de la tarjeta -->
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
@@ -58,10 +56,8 @@
             </span>
           </div>
 
-          <!-- Descripción -->
           <p class="text-gray-600 mb-4 line-clamp-3">{{ vacante.descripcion }}</p>
 
-          <!-- Detalles -->
           <div class="space-y-3">
             <div class="flex items-center text-sm text-gray-600">
               <svg class="flex-shrink-0 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +82,6 @@
             </div>
           </div>
 
-          <!-- Fechas -->
           <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between text-xs text-gray-500">
             <div>
               <span class="font-medium">Publicado:</span> {{ formatDate(vacante.fechaPublicacion) }}
@@ -97,7 +92,6 @@
           </div>
         </div>
 
-        <!-- Pie de tarjeta -->
         <div class="bg-gray-50 px-6 py-4">
           <router-link
             :to="'/vacante/' + vacante.id"
@@ -116,7 +110,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getVacantes } from '@/services/api.js'
+import { VacanteService } from '@/services/VacanteService'
 
 const vacantes = ref([])
 const errorMessage = ref('')
@@ -143,7 +137,7 @@ const formatDate = (date) => {
 
 onMounted(async () => {
   try {
-    const data = await getVacantes()
+    const data = await VacanteService.getAllVacantes()
     vacantes.value = data.map(vacante => ({
       ...vacante,
       logoEmpresa: vacante.logoEmpresa || 'https://img.icons8.com/fluency/96/000000/company.png'
@@ -154,16 +148,3 @@ onMounted(async () => {
   }
 })
 </script>
-
-<style scoped>
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.transition {
-  transition: all 0.2s ease-in-out;
-}
-</style>

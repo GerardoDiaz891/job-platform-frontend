@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DadshbaordUsuario from '../views/Usuarios/DadshbaordUsuario.vue'
 import NotFound from '../components/NotFound.vue'
-import Vacante from '@/components/Vacante.vue'
+import Vacante from '@/components/VacanteCard.vue'
 import PerfilEmpresaVue from '../views/Empresas/PerfilEmpresa.vue'
 
 const router = createRouter({
