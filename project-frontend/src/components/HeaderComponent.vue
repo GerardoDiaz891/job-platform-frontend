@@ -4,7 +4,8 @@
       <!-- Logo y Nombre -->
       <div class="flex items-center space-x-2">
         <router-link to="/" class="flex items-center">
-          <img class="w-10 h-10 transition-transform duration-300 hover:scale-110" src="@/assets/trans.png" alt="Logo" />
+          <img class="w-10 h-10 transition-transform duration-300 hover:scale-110" src="@/assets/trans.png"
+            alt="Logo" />
           <span class="ml-2 text-xl font-bold hidden sm:block">EmpleoLink</span>
         </router-link>
       </div>
@@ -74,46 +75,72 @@
     </nav>
   </header>
 </template>
-
 <script>
-import { AuthService } from '@/services/authService';
+import { AuthService } from '@/services/authService'
+import { useAuthStore } from '@/stores/authStore'
 
 export default {
   name: 'AppHeader',
   data() {
     return {
       isMenuOpen: false,
-      isLoggedIn: false,
-      userRole: '',
-    };
+      tokenCheckInterval: null
+    }
+  },
+  computed: {
+    isLoggedIn() {
+      return useAuthStore().isAuthenticated
+    },
+    userRole() {
+      return useAuthStore().userRole
+    }
   },
   created() {
-    this.checkAuthStatus();
-    window.addEventListener('auth-change', this.checkAuthStatus);
+    this.setupTokenCheck()
+    window.addEventListener('auth-change', this.handleAuthChange)
   },
   beforeDestroy() {
-    window.removeEventListener('auth-change', this.checkAuthStatus);
+    clearInterval(this.tokenCheckInterval)
+    window.removeEventListener('auth-change', this.handleAuthChange)
   },
   methods: {
-    checkAuthStatus() {
-      this.isLoggedIn = !!localStorage.getItem('token');
-      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-      this.userRole = userData.rol || '';
+    setupTokenCheck() {
+
+      // Verificar token cada minuto
+      this.tokenCheckInterval = setInterval(async () => {
+        if (this.isLoggedIn) {
+          const isExpired = await AuthService.checkTokenExpiration()
+          if (isExpired) {
+            this.logout()
+          }
+        }
+      }, 60000)
+    },
+    handleAuthChange() {
+      // Forzar actualización de computed properties
+      this.$forceUpdate()
     },
     async logout() {
       try {
-        await AuthService.logout(); // Llamar al método que invalida el token
-        this.isLoggedIn = false;
-        this.userRole = '';
-        window.dispatchEvent(new Event('auth-change'));
+        await AuthService.logout()
+        useAuthStore().logout()
 
         if (this.$route.path !== '/login') {
-          this.$router.push('/login');
+          this.$router.push('/login')
         }
       } catch (error) {
-        console.error('Error al cerrar sesión:', error);
+        console.error('Error al cerrar sesión:', error)
       }
     },
-  },
-};
+    checkAuthStatus() {
+      this.isLoggedIn = !!localStorage.getItem('token') && AuthService.isTokenValid();
+      if (!this.isLoggedIn) {
+        this.logout(); // Si el token no es válido, cerrar sesión automáticamente
+      } else {
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        this.userRole = userData.rol || '';
+      }
+    },
+  }
+}
 </script>

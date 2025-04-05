@@ -1,10 +1,8 @@
-// authService.ts
 import apiClient from './api';
 import { AxiosError } from 'axios';
 import type { LoginCredentials } from '@/interfaces/LoginCredentials';
 import type { RegisterUserData } from '@/interfaces/RegisterUserData';
 import type { UsuarioUpdateDTO } from '@/interfaces/UsuarioUpdateDTO';
-import { clearAuthToken } from '@/services/api';
 
 export const AuthService = {
   async register(userData: RegisterUserData) {
@@ -26,7 +24,8 @@ export const AuthService = {
       const userData = {
         id: parseInt(payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']),
         rol: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-        email: payload['http://schemas.xmlsoap.org/ws/2008/06/identity/claims/emailaddress'],
+        email: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+        exp: payload.exp, // Guardar la fecha de expiración
       };
 
       localStorage.setItem('userData', JSON.stringify(userData));
@@ -35,6 +34,15 @@ export const AuthService = {
       console.error('Error al iniciar sesión:', error);
       throw error;
     }
+  },
+  // Método para verificar si el token sigue siendo válido
+  isTokenValid() {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const exp = userData.exp;
+    if (!exp) return false;
+
+    const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+    return currentTime < exp;
   },
 
   async getProfile() {
@@ -74,4 +82,23 @@ export const AuthService = {
     localStorage.removeItem('token');
     localStorage.removeItem('userData');
   },
+
+  checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp * 1000;
+        if (Date.now() >= exp) {
+          this.logout();
+          return true;
+        }
+        return false;
+      } catch {
+        this.logout();
+        return true;
+      }
+    }
+    return true;
+  }
 };
