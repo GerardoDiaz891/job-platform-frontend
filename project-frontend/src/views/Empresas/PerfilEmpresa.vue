@@ -21,6 +21,26 @@
       </div>
     </div>
 
+    <!-- Mensaje de "sin cambios" -->
+    <div v-if="showNoChangesMessage" class="fixed top-4 right-4 z-50">
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg shadow-lg max-w-sm">
+        <div class="flex items-center">
+          <svg class="h-6 w-6 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p class="font-bold">Sin cambios</p>
+            <p>No se detectaron modificaciones en el perfil</p>
+          </div>
+          <button @click="showNoChangesMessage = false" class="ml-auto text-yellow-700 hover:text-yellow-900">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-4xl mx-auto px-4">
       <!-- Encabezado -->
       <div class="text-center mb-10">
@@ -154,75 +174,111 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import FooterComponent from '@/components/FooterComponent.vue'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import { AuthService } from '@/services/authService'
+import { ref, onMounted } from 'vue';
+import FooterComponent from '@/components/FooterComponent.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+import { AuthService } from '@/services/authService';
 
-const description = ref('')
-const location = ref('')
-const email = ref('')
-const name = ref('')
-const phone = ref('')
-const loading = ref(false)
-const showSuccessMessage = ref(false)
-let currentProfile = null
+// Variables reactivas del formulario
+const description = ref('');
+const location = ref('');
+const email = ref('');
+const name = ref('');
+const phone = ref('');
+const loading = ref(false);
+const showSuccessMessage = ref(false);
+const showNoChangesMessage = ref(false);
 
-// Datos iniciales
+// Almacenar los datos originales del perfil
+const originalProfile = ref(null);
+
+// Cargar datos iniciales
 async function loadProfile() {
   try {
-    const dataInfo = await AuthService.getProfile()
-    currentProfile = dataInfo
-    description.value = dataInfo.descripcionEmpresa || ''
-    location.value = dataInfo.direccion || ''
-    name.value = dataInfo.nombre || ''
-    email.value = dataInfo.correo || ''
-    phone.value = dataInfo.telefono || ''
+    const dataInfo = await AuthService.getProfile();
+    originalProfile.value = { ...dataInfo }; // Clonar los datos originales
+    description.value = dataInfo.descripcionEmpresa || '';
+    location.value = dataInfo.direccion || '';
+    name.value = dataInfo.nombre || '';
+    email.value = dataInfo.correo || '';
+    phone.value = dataInfo.telefono || '';
   } catch (error) {
-    console.error('Error al cargar el perfil:', error)
+    console.error('Error al cargar el perfil:', error);
   }
 }
 
+// Verificar si hay cambios en los datos
+function hasChanges() {
+  if (!originalProfile.value) return true; // Si no hay datos originales, asumir que hay cambios
+  return (
+    name.value !== originalProfile.value.nombre ||
+    email.value !== originalProfile.value.correo ||
+    description.value !== originalProfile.value.descripcionEmpresa ||
+    location.value !== originalProfile.value.direccion ||
+    phone.value !== originalProfile.value.telefono
+  );
+}
+
+// Guardar el perfil
 async function saveProfile() {
-  loading.value = true
+  // Verificar si hay cambios
+  if (!hasChanges()) {
+    showNoChangesMessage.value = true;
+    setTimeout(() => {
+      showNoChangesMessage.value = false;
+    }, 5000);
+    return;
+  }
+
+  loading.value = true;
   try {
     const updateData = {
       nombre: name.value,
-      contraseña: currentProfile?.contraseña || "",
-      nombreEmpresa: currentProfile?.nombreEmpresa || '',
-      tipoEmpresa: currentProfile?.tipoEmpresa || '',
+      contraseña: originalProfile.value?.contraseña || '',
+      nombreEmpresa: originalProfile.value?.nombreEmpresa || '',
+      tipoEmpresa: originalProfile.value?.tipoEmpresa || '',
       direccion: location.value,
       telefono: phone.value,
-      sitioWeb: currentProfile?.sitioWeb || '',
-      descripcionEmpresa: description.value
-    }
+      sitioWeb: originalProfile.value?.sitioWeb || '',
+      descripcionEmpresa: description.value,
+    };
 
-    await AuthService.updateProfile(updateData)
-    
-    // MENSAJE DE EXITO QUE SE OCLTA AL CABO DE 5 SEG
-    showSuccessMessage.value = true
+    await AuthService.updateProfile(updateData);
+
+    // Actualizar los datos originales después de guardar
+    originalProfile.value = {
+      ...originalProfile.value,
+      nombre: name.value,
+      correo: email.value,
+      descripcionEmpresa: description.value,
+      direccion: location.value,
+      telefono: phone.value,
+    };
+
+    // Mostrar mensaje de éxito
+    showSuccessMessage.value = true;
     setTimeout(() => {
-      showSuccessMessage.value = false
-    }, 5000)
-    
+      showSuccessMessage.value = false;
+    }, 5000);
   } catch (error) {
-    console.error('Error al actualizar el perfil:', error)
-    alert('Error al actualizar el perfil: ' + (error.response?.data?.title || error.message))
+    console.error('Error al actualizar el perfil:', error);
+    alert('Error al actualizar el perfil: ' + (error.response?.data?.title || error.message));
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
+// Restablecer el formulario a los datos originales
 function resetForm() {
-  loadProfile()
+  loadProfile();
 }
 
 onMounted(() => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token');
   if (!token) {
-    console.error('No hay token, redirigiendo al login...')
+    console.error('No hay token, redirigiendo al login...');
   } else {
-    loadProfile()
+    loadProfile();
   }
-})
+});
 </script>
